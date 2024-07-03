@@ -1,0 +1,9 @@
+quill-editor {
+  display: block;
+  width: 100%;
+  min-height: 10px; /* Минимальная высота для редакторов */
+}
+
+.ql-toolbar {
+  margin-bottom: 1rem;
+}

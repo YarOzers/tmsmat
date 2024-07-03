@@ -1,0 +1,16 @@
+<div fxLayout="column">
+  <app-custom-toolbar class="ql-toolbar"></app-custom-toolbar>
+    <div class="step" *ngFor="let step of steps; let i = index" fxLayout="column" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutGap="10px">
+        <div fxFlex="50%">
+          <quill-editor [(ngModel)]="step.input1" [modules]="modules"></quill-editor>
+        </div>
+        <div fxFlex="50%">
+          <quill-editor [(ngModel)]="step.input2" [modules]="modules"></quill-editor>
+        </div>
+      </div>
+    </div>
+  </div>
+<div fxLayout="row" fxLayoutAlign="end end">
+  <button mat-button fxLayoutAlign="start center" (click)="addStep()">Добавить шаг</button>
+</div>
