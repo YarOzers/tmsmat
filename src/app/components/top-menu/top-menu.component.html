@@ -1,0 +1,13 @@
+<button mat-button [matMenuTriggerFor]="project">Project</button>
+<mat-menu #project="matMenu">
+  <button mat-menu-item>Open</button>
+  <button mat-menu-item>Create</button>
+</mat-menu>
+
+<button mat-button [matMenuTriggerFor]="testplan">Test plan</button>
+<mat-menu #testplan="matMenu">
+  <button mat-menu-item>Open</button>
+  <button mat-menu-item>Create</button>
+</mat-menu>
+
+<button mat-button (click)="openDialog()">Create test case</button>
