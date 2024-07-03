@@ -7,3 +7,14 @@ quill-editor {
 .ql-toolbar {
   margin-bottom: 1rem;
 }
+table {
+  width: 100%;
+}
+
+.custom-editor .ql-container {
+  border: none !important;
+}
+.custom-editor .ql-editor {
+  border: none !important;
+  padding: 0 !important;
+}
