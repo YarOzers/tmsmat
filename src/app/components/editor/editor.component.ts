@@ -1,5 +1,5 @@
-import {Component, computed, NgModule, signal} from '@angular/core';
-import {FormsModule} from "@angular/forms";
+import {Component, computed, NgModule, OnInit, signal} from '@angular/core';
+import {FormControl, FormsModule} from "@angular/forms";
 import {QuillModule} from "ngx-quill";
 import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
@@ -16,19 +16,30 @@ import {
 } from "@angular/material/table";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {SelectionModel} from "@angular/cdk/collections";
-import Editor from "quill/core/editor";
 
+
+export interface Row {
+  position: number;
+  step: string;
+  expectedResult: string;
+}
 
 export interface PeriodicElement {
   name: string;
   position: number;
+  weight: number;
+  symbol: string;
 }
 
-export interface Task {
-  name: string;
-  completed: boolean;
-  subtasks?: Task[];
-}
+const ROW_DATA: Row[] = [
+  {position: 1, step: 'first step', expectedResult: 'first expected result'},
+  {position: 2, step: 'second step', expectedResult: 'second expected result'},
+  {position: 3, step: 'third step', expectedResult: 'third expected result'},
+  {position: 4, step: 'fourth step', expectedResult: 'fourth expected result'},
+  {position: 5, step: 'fifth step', expectedResult: 'fifth expected result'},
+  {position: 6, step: 'sixth step', expectedResult: 'sixth expected result'},
+]
+
 
 @Component({
   selector: 'app-editor',
@@ -58,50 +69,54 @@ export interface Task {
   styleUrl: './editor.component.css'
 })
 export class EditorComponent {
-  steps = [{ input1: '', input2: '' }]// Массив для хранения шагов
+
+
+  rows: Row[] = [{position: 0, step: '', expectedResult: ''}]// Массив для хранения шагов
   modules = {
     toolbar: '#custom-toolbar'
   };
 
 
-  addStep() {
-    this.steps.push({ input1: '', input2: '' });
+  addRow() {
+    this.rows.push({position: 0, step: '', expectedResult: ''});
+    console.log(this.rows);
   }
 
 
-/////////////
+  deleteRow() {
+    // if (this.rows.forEach())
+    // this.rows.pop();
+  }
 
-  readonly task = signal<Task>({
-    name: 'Parent task',
-    completed: false,
-    subtasks: [
-      {name: 'Child task 1', completed: false},
-      {name: 'Child task 2', completed: false},
-      {name: 'Child task 3', completed: false},
-    ],
-  });
 
-  readonly partiallyComplete = computed(() => {
-    const task = this.task();
-    if (!task.subtasks) {
-      return false;
+  displayedColumns: string[] = ['select', 'step', 'expectedResult'];
+  dataSource = new MatTableDataSource<Row>(ROW_DATA);
+  selection = new SelectionModel<Row>(true, []);
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
     }
-    return task.subtasks.some(t => t.completed) && !task.subtasks.every(t => t.completed);
-  });
 
-  update(completed: boolean, index?: number) {
-    this.task.update(task => {
-      if (index === undefined) {
-        task.completed = completed;
-        task.subtasks?.forEach(t => (t.completed = completed));
-      } else {
-        task.subtasks![index].completed = completed;
-        task.completed = task.subtasks?.every(t => t.completed) ?? true;
-      }
-      return {...task};
-    });
+    this.selection.select(...this.dataSource.data);
   }
 
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Row): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
 }
 
 @NgModule({
@@ -117,5 +132,6 @@ export class EditorComponent {
     })
   ]
 })
+
 class QuillConfigModule {
 }
