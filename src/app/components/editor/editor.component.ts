@@ -1,45 +1,32 @@
-import {Component, computed, NgModule, OnInit, signal} from '@angular/core';
-import {FormControl, FormsModule} from "@angular/forms";
+import {AfterViewInit, Component, ElementRef, NgModule, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {FormsModule} from "@angular/forms";
 import {QuillModule} from "ngx-quill";
 import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatButton} from "@angular/material/button";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {MatListOption, MatSelectionList} from "@angular/material/list";
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
   MatHeaderCell,
-  MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable,
-  MatTableDataSource
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable
 } from "@angular/material/table";
 import {MatCheckbox} from "@angular/material/checkbox";
-import {SelectionModel} from "@angular/cdk/collections";
+import {NoHtmlPipePipe} from "./no-html-pipe.pipe";
 
-
-export interface Row {
-  position: number;
-  step: string;
+interface Item {
+  selected: boolean;
+  id: number;
+  action: string;
   expectedResult: string;
 }
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ROW_DATA: Row[] = [
-  {position: 1, step: 'first step', expectedResult: 'first expected result'},
-  {position: 2, step: 'second step', expectedResult: 'second expected result'},
-  {position: 3, step: 'third step', expectedResult: 'third expected result'},
-  {position: 4, step: 'fourth step', expectedResult: 'fourth expected result'},
-  {position: 5, step: 'fifth step', expectedResult: 'fifth expected result'},
-  {position: 6, step: 'sixth step', expectedResult: 'sixth expected result'},
-]
-
 
 @Component({
   selector: 'app-editor',
@@ -63,59 +50,100 @@ const ROW_DATA: Row[] = [
     MatRow,
     MatTable,
     MatHeaderRowDef,
-    MatRowDef
+    MatRowDef,
+    NgIf,
+    NoHtmlPipePipe
   ],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css'
 })
-export class EditorComponent {
+export class EditorComponent implements AfterViewInit{
+  @ViewChildren('quillEditor') quillEditors!: QueryList<ElementRef>;
+  itemId: number = 2;
+  editingActionIndex: number | null = null;
+  editingExpectedResultIndex: number | null = null;
+  toolbarVisible: boolean = true;
 
-
-  rows: Row[] = [{position: 0, step: '', expectedResult: ''}]// Массив для хранения шагов
+  step: Item =
+    {
+      selected:false,
+      id: 0,
+      action: '',
+      expectedResult: ''
+    }
   modules = {
     toolbar: '#custom-toolbar'
   };
+  protected selectedAll: boolean = false;
+  constructor(private renderer: Renderer2) {
+  }
+  ngAfterViewInit() {
 
-
-  addRow() {
-    this.rows.push({position: 0, step: '', expectedResult: ''});
-    console.log(this.rows);
   }
 
 
-  deleteRow() {
-    // if (this.rows.forEach())
-    // this.rows.pop();
-  }
-
-
-  displayedColumns: string[] = ['select', 'step', 'expectedResult'];
-  dataSource = new MatTableDataSource<Row>(ROW_DATA);
-  selection = new SelectionModel<Row>(true, []);
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
-      return;
+  //  самодельная таблица
+  items: Item[] = [
+    {
+      selected: false,
+      id: 1,
+      action: '',
+      expectedResult: ''
     }
 
-    this.selection.select(...this.dataSource.data);
+  ];
+
+  selectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.items.forEach(item => item.selected = checked);
+    this.selectedAll = checked;
   }
 
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: Row): string {
-    if (!row) {
-      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+  addItem() {
+    this.items.push({selected:false, id:this.itemId , action: '',expectedResult: ''});
+    this.itemId = this.itemId + 1;
+    this.updateSelectAllState();
+  }
+
+  deleteSelected(): void {
+    this.items = this.items.filter(item => !item.selected);
+    this.reorderIds();
+    if (this.selectedAll){
+      this.selectedAll = false;
+      this.itemId = 1;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+  }
+
+  reorderIds(): void {
+    this.items.forEach((item, index) => {
+      item.id = index + 1;
+    });
+  }
+
+  autoResize(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+
+  editAction(index: number): void {
+    this.editingActionIndex = index;
+    this.editingExpectedResultIndex = null;
+  }
+
+  editExpectedResult(index: number): void {
+    this.editingExpectedResultIndex = index;
+    this.editingActionIndex = null;
+  }
+
+  stripHtml(html: string): string {
+    let div = document.createElement('div');
+    div.innerHTML = html;
+    return div.innerText;
+  }
+
+  updateSelectAllState(): void {
+    this.selectedAll = this.items.every(item => item.selected);
   }
 }
 
@@ -127,7 +155,8 @@ export class EditorComponent {
           [{header: [1, 2, false]}],
           ['bold', 'italic', 'underline'],
           ['image', 'code-block']
-        ]
+        ],
+        imageResize: {}
       }
     })
   ]

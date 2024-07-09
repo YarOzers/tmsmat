@@ -1,70 +1,36 @@
 <div fxLayout="column">
-  <app-custom-toolbar class="ql-toolbar"></app-custom-toolbar>
-  <div class="row" fxLayout="column" fxLayoutGap="10px">
-    <div fxLayout="row" fxLayoutGap="10px">
-      <div fxFlex="50%">
-        <span>Действие</span>
-      </div>
-      <div fxFlex="50%">
-        <span>Ожидаемый результат</span>
-      </div>
+  <div fxLayout="column">
+    <app-custom-toolbar class="ql-toolbar"></app-custom-toolbar>
+  </div>
+  <quill-editor [(ngModel)]="step.action" [modules]="modules" class="display"></quill-editor>
+  <div fxLayout="row" class="table-header">
+    <div fxFlex="3" class="center-content">
+      <input type="checkbox" (change)="selectAll($event)" [checked]="selectedAll"/>
+    </div>
+    <div fxFlex="3%" class="center-content">ID</div>
+    <div fxFlex="47%">Действие</div>
+    <div fxFlex="47%">Ожидаемый результат</div>
+  </div>
+
+  <div *ngFor="let item of items; let i = index" fxLayout="row" class="table-row">
+    <div fxFlex="3%" class="table-cell center-content">
+      <input type="checkbox" [(ngModel)]="item.selected" (change)="updateSelectAllState()"/>
+    </div>
+    <div fxFlex="3%" class="table-cell center-content">{{ item.id }}</div>
+    <div fxFlex="47%" class="table-cell center-content" (click)="editAction(i)">
+      <div *ngIf="editingActionIndex !== i" [innerHTML]="item.action"></div>
+      <quill-editor #quillEditor *ngIf="editingActionIndex === i" [(ngModel)]="item.action" [modules]="modules"
+                    class="custom-editor"></quill-editor>
+    </div>
+    <div fxFlex="47%" class="table-cell center-content" (click)="editExpectedResult(i)">
+      <div *ngIf="editingExpectedResultIndex !== i" [innerHTML]="item.expectedResult"></div>
+      <quill-editor #quillEditor *ngIf="editingExpectedResultIndex === i" [(ngModel)]="item.expectedResult"
+                    [modules]="modules" class="custom-editor"></quill-editor>
     </div>
   </div>
-  <div class="row" *ngFor="let row of rows; let i = index" fxLayout="column" fxLayoutGap="10px">
-    <div fxLayout="row" fxLayoutGap="10px">
-      <div fxFlex="50%">
-        <quill-editor [(ngModel)]="row.step" [modules]="modules" class="custom-editor"></quill-editor>
-      </div>
-      <div fxFlex="50%">
-        <quill-editor [(ngModel)]="row.expectedResult" [modules]="modules" class="custom-editor"></quill-editor>
-      </div>
-    </div>
+
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-button fxLayoutAlign="start center" (click)="deleteSelected()">Удалить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="addItem()">Добавить шаг</button>
   </div>
 </div>
-<div fxLayout="row" fxLayoutAlign="end end">
-  <button mat-button fxLayoutAlign="start center" (click)="deleteRow()">Удалить шаг</button>
-  <button mat-button fxLayoutAlign="start center" (click)="addRow()">Добавить шаг</button>
-</div>
-
-<!--Таблица-->
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-  <!-- Checkbox Column -->
-  <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                    [checked]="selection.hasValue() && isAllSelected()"
-                    [indeterminate]="selection.hasValue() && !isAllSelected()"
-                    [aria-label]="checkboxLabel()">
-      </mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let row">
-      <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(row) : null"
-                    [checked]="selection.isSelected(row)"
-                    [aria-label]="checkboxLabel(row)">
-      </mat-checkbox>
-    </td>
-  </ng-container>
-
-  <!-- Step Column-->
-  <ng-container matColumnDef="step">
-    <th mat-header-cell *matHeaderCellDef> Действие </th>
-    <td mat-cell *matCellDef="let element"> {{element.step}} </td>
-  </ng-container>
-
-  <!-- ExpectedResult Column-->
-  <ng-container matColumnDef="expectedResult">
-    <th mat-header-cell *matHeaderCellDef> Ожидаемый результат </th>
-    <td mat-cell *matCellDef="let element"> {{element.expectedResult}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-      (click)="selection.toggle(row)">
-  </tr>
-
-</table>
-
-
-
