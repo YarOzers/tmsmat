@@ -7,6 +7,7 @@ import {QuillEditorComponent, QuillModule} from "ngx-quill";
 import {FormsModule} from "@angular/forms";
 import {EditorComponent} from "../editor/editor.component";
 import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
+import {TestCaseComponent} from "../test-case/test-case.component";
 
 @Component({
   selector: 'app-create-test-case',
@@ -20,7 +21,8 @@ import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component
     FormsModule,
     QuillModule,
     EditorComponent,
-    CustomToolbarComponent
+    CustomToolbarComponent,
+    TestCaseComponent
   ],
   templateUrl: './create-test-case.component.html',
   styleUrl: './create-test-case.component.css'

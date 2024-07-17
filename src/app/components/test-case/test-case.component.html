@@ -1,0 +1,55 @@
+<div>
+  <div class="main-container">
+    <div
+      class="editor-container editor-container_balloon-editor editor-container_include-style editor-container_include-block-toolbar"
+      #editorContainerElement
+    >
+
+    </div>
+  </div>
+
+
+  <div fxLayout="column">
+    <div fxLayout="row" class="table-header">
+      <div fxFlex="3" class="center-content">
+        <input type="checkbox" (change)="selectAll($event)" [checked]="selectedAll"/>
+      </div>
+      <div fxFlex="3%" class="center-content">ID</div>
+      <div fxFlex="47%">Действие</div>
+      <div fxFlex="47%">Ожидаемый результат</div>
+    </div>
+    <div class="outline">
+      <div *ngFor="let item of items; let i = index" fxLayout="row" class="table-row">
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">
+          <input type="checkbox" [(ngModel)]="item.selected" (change)="updateSelectAllState()"/>
+        </div>
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">{{ item.id }}</div>
+        <div fxFlex="47%" class="table-cell-left center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="item.action"
+              [config]="config"
+              (ready)="onEditorReady($event, item, 'actionEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+        <div fxFlex="47%" class="table-cell-right center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="item.expectedResult"
+              [config]="config"
+              (ready)="onEditorReady($event, item, 'expectedResultEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-button fxLayoutAlign="start center" (click)="deleteSelected()">Удалить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="addItem()">Добавить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="saveTestCase()">Сохранить изменения</button>
+  </div>
+</div>
