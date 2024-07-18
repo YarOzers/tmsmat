@@ -2,6 +2,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 }
 
 .header {
@@ -10,13 +11,91 @@
   padding: 10px;
 }
 
+.content {
+  display: flex;
+  flex: 1; /* flex-grow, flex-shrink и flex-basis */
+  overflow: hidden; /* предотвращает появление прокрутки */
+}
+
 .left-column {
   background-color: #f1f1f1;
   padding: 10px;
+  overflow-y: auto; /* прокрутка появляется только при переполнении */
 }
 
 .right-column {
   background-color: #ffffff;
   padding: 10px;
   border-left: 1px solid #ddd;
+  overflow-y: auto; /* прокрутка появляется только при переполнении */
+}
+
+.select-field {
+  width: 95%;
+}
+
+/* Общие стили для input[type="time"] */
+input[type="time"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 95%; /* Ширина занимает всё доступное пространство */
+  box-sizing: border-box; /* Учитываем padding в общей ширине */
+}
+
+/* Убираем стандартные браузерные стили для input[type="time"] */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none; /* Убираем кнопку выбора времени */
+}
+
+/* При наведении */
+input[type="time"]:hover {
+  border-color: #999;
+}
+
+/* При фокусе */
+input[type="time"]:focus {
+  border-color: #007bff; /* Цвет при фокусе */
+  outline: none; /* Убираем стандартный outline */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Эффект при фокусе */
+}
+
+.block{
+  margin-top: 1rem;
+}
+
+/* Стили для контейнера инпута */
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Стили для инпута */
+.styled-input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #c4d9ff;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+}
+
+/* При фокусе */
+.styled-input:focus {
+  border-color: #007bff; /* Цвет рамки при фокусе */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Тень при фокусе */
+}
+
+/* Стили для placeholder */
+.styled-input::placeholder {
+  color: #999;
+}
+
+/* При наведении */
+.styled-input:hover {
+  border-color: #999;
 }

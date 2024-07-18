@@ -1,0 +1,11 @@
+<div class="modal-overlay" *ngIf="isOpen">
+  <div class="modal-content">
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+    <div class="modal-footer">
+      <button class="save-button" (click)="saveTestCase()">Сохранить</button>
+      <button class="close-button" (click)="closeModal()">Закрыть</button>
+    </div>
+  </div>
+</div>

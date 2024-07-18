@@ -1,9 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatMenu, MatMenuModule, MatMenuTrigger} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {NgIf} from "@angular/common";
+import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
-import {ModalComponent} from "../modal/modal.component";
+import {FlexModule} from "@angular/flex-layout";
 
 @Component({
   selector: 'app-top-menu',
@@ -12,26 +13,24 @@ import {ModalComponent} from "../modal/modal.component";
     MatMenu,
     MatMenuTrigger,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    NgIf,
+    FullscreenModalComponent,
+    CreateTestCaseComponent,
+    FlexModule
   ],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
-  readonly dialog = inject(MatDialog);
+  isModalOpen = false;
 
-  openDialog() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '100%';
-    dialogConfig.height = '100%';
-    dialogConfig.maxWidth = '100%';
-    dialogConfig.maxHeight = '100%';
-    dialogConfig.panelClass = 'full-screen-dialog'; // Добавьте, если вам нужно добавить дополнительные стили
-    const dialogRef = this.dialog.open(ModalComponent, dialogConfig);
+  openModal() {
+    this.isModalOpen = true;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+  handleModalClose() {
+    this.isModalOpen = false;
   }
 }
 

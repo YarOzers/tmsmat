@@ -1,15 +1,24 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChildren
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 import {
-  BalloonEditor,
   AccessibilityHelp,
   Alignment,
   Autoformat,
   AutoImage,
   AutoLink,
   Autosave,
+  BalloonEditor,
   Base64UploadAdapter,
   BlockQuote,
   BlockToolbar,
@@ -74,8 +83,7 @@ import {
   TextTransformation,
   TodoList,
   Underline,
-  Undo,
-  type EditorConfig
+  Undo
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
@@ -122,6 +130,8 @@ export interface PostConditionItem {
 })
 export class TestCaseComponent implements OnInit, AfterViewInit {
   @ViewChildren('editorElement') editorElements!: QueryList<ElementRef>;
+
+
   stepItemId: number = 1;
   preConditionItemId: number = 1;
   postConditionItemId: number = 1;
@@ -133,7 +143,10 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
   preConditionItems = this.testCaseService.getTestCasePreconditionItems();
   postConditionItems = this.testCaseService.getTestCasePostConditionItems();
 
-  constructor(private changeDetector: ChangeDetectorRef, private testCaseService: TestCaseService) {
+  constructor(private changeDetector: ChangeDetectorRef,
+              private testCaseService: TestCaseService,
+              private renderer: Renderer2
+  ) {
   }
 
   ngOnInit(): void {
@@ -348,6 +361,30 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
     this.addStepItem();
     this.addPreConditionItem();
     this.addPostConditionItem();
+    this.initializeEditors();
+  }
+  initializeEditors(): void {
+    this.stepItems.forEach(item => {
+      this.initializeEditor(item, 'actionEditor');
+      this.initializeEditor(item, 'expectedResultEditor');
+    });
+
+    this.preConditionItems.forEach(item => {
+      this.initializeEditor(item, 'actionEditor');
+      this.initializeEditor(item, 'expectedResultEditor');
+    });
+
+    this.postConditionItems.forEach(item => {
+      this.initializeEditor(item, 'actionEditor');
+      this.initializeEditor(item, 'expectedResultEditor');
+    });
+  }
+
+  initializeEditor(item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
+    console.log('Initializing Editor:', item, editorField);
+    // Simulating editor instance creation
+    item[editorField] = { editorInstance: { editing: { view: { focus: () => console.log('Focusing editor') } } } };
+    console.log('Initialized Item:', item);
   }
 
   selectAllSteps(event: Event): void {
@@ -355,11 +392,13 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
     this.stepItems.forEach(item => item.selected = checked);
     this.selectedAllSteps = checked;
   }
+
   selectAllPreConditions(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.preConditionItems.forEach(item => item.selected = checked);
     this.selectedAllPreConditions = checked;
   }
+
   selectAllPostConditions(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.postConditionItems.forEach(item => item.selected = checked);
@@ -447,17 +486,39 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
     this.postConditionItemId = this.postConditionItems.length + 1;
   }
 
+  focusEditor(item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
+    console.log('Focus Editor:', item, editorField);
+    if (item[editorField]) {
+      console.log('Editor Field Exists:', item[editorField]);
+      const editorInstance = item[editorField].editorInstance;
+      if (editorInstance) {
+        console.log('Editor Instance Exists:', editorInstance);
+        editorInstance.editing.view.focus();
+      } else {
+        console.error('Editor Instance does not exist');
+      }
+    } else {
+      console.error('Editor Field does not exist');
+    }
+  }
+
 
   onStepEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
-    item[editorField] = event.editor;
+    console.log('Step Editor Ready:', event, item, editorField);
+    item[editorField] = { editorInstance: event.editorInstance || event };
+    console.log('Updated Item with Editor Instance:', item);
   }
 
   onPreConditionEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
-    item[editorField] = event.editor;
+    console.log('PreCondition Editor Ready:', event, item, editorField);
+    item[editorField] = { editorInstance: event.editorInstance || event };
+    console.log('Updated Item with Editor Instance:', item);
   }
 
   onPostConditionEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
-    item[editorField] = event.editor;
+    console.log('PostCondition Editor Ready:', event, item, editorField);
+    item[editorField] = { editorInstance: event.editorInstance || event };
+    console.log('Updated Item with Editor Instance:', item);
   }
 
   saveSteps() {
@@ -469,8 +530,10 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
     this.testCaseService.setPreconditionItems(this.preConditionItems);
     this.testCaseService.saveTestCasePreConditionItems();
   }
+
   savePostConditions() {
     this.testCaseService.setPostConditionItems(this.postConditionItems);
     this.testCaseService.saveTestCasePostConditionItems();
   }
+
 }

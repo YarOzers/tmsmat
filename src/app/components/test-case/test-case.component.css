@@ -159,13 +159,34 @@
 
 
 .table-cell-left{
-  border-left: #007bff solid 1px;
+  border-left: #e3eaf8 solid 1px;
 }
 
 .table-cell-right{
-  border-left: #007bff solid 1px;
+  border-left: #e3eaf8 solid 1px;
 }
 
 .outline{
-  border: #007bff solid 1px;
+  border: #e3eaf8 solid 0.5px;
 }
+
+.editor-container__editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-bottom: #e3eaf8 solid 0.5px ;
+
+}
+
+.ck-editor__editable {
+  min-height: auto !important;
+  height: auto !important;
+  overflow: hidden; /* предотвращает скроллинг внутри элемента */
+}
+
+.ck-color-focus-border {
+  border: none;
+}
+
+

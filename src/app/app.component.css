@@ -1,5 +1,5 @@
 .container {
-  height: 100vh;
+  height: 95vh;
   display: flex;
   flex-direction: column;
 }
@@ -10,15 +10,23 @@
   padding: 10px;
 }
 
+.content {
+  display: flex;
+  flex: 1; /* flex-grow, flex-shrink и flex-basis */
+  overflow: hidden; /* предотвращает появление прокрутки */
+}
+
 .left-column {
   background-color: #f1f1f1;
   padding: 10px;
+  overflow-y: auto; /* прокрутка появляется только при переполнении */
 }
 
 .right-column {
   background-color: #ffffff;
   padding: 10px;
   border-left: 1px solid #ddd;
+  overflow-y: auto; /* прокрутка появляется только при переполнении */
 }
 
 /*Модальное окно*/
@@ -31,3 +39,5 @@
   max-height: 100vh;
   overflow: hidden;
 }
+
+

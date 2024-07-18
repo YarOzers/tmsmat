@@ -5,9 +5,10 @@ import {TestCaseListComponent} from "../test-case-list/test-case-list.component"
 import {TopMenuComponent} from "../top-menu/top-menu.component";
 import {QuillEditorComponent, QuillModule} from "ngx-quill";
 import {FormsModule} from "@angular/forms";
-import {EditorComponent} from "../editor/editor.component";
 import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
 import {TestCaseComponent} from "../test-case/test-case.component";
+import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
+import {MatOption, MatSelect, MatSelectModule} from "@angular/material/select";
 
 @Component({
   selector: 'app-create-test-case',
@@ -20,13 +21,18 @@ import {TestCaseComponent} from "../test-case/test-case.component";
     QuillEditorComponent,
     FormsModule,
     QuillModule,
-    EditorComponent,
     CustomToolbarComponent,
-    TestCaseComponent
+    TestCaseComponent,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   templateUrl: './create-test-case.component.html',
   styleUrl: './create-test-case.component.css'
 })
 export class CreateTestCaseComponent {
+  testCaseName: string | undefined;
 
 }

@@ -40,7 +40,7 @@ export class TestCaseService {
   }
 
   clearTestCasePreconditionItemsArray(): void {
-    this.testCasePostconditionItemsArray = [];
+    this.testCasePreconditionItemsArray = [];
   }
 
   getTestCasePostConditionItems(): StepItem[]{
