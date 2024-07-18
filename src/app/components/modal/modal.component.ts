@@ -22,6 +22,6 @@ export class ModalComponent {
   constructor(private testCaseService: TestCaseService) {}
 
   saveTestCase(): void {
-    this.testCaseService.saveTestCase();
+    this.testCaseService.saveTestCaseStepItems();
   }
 }

@@ -2,7 +2,6 @@
   <div fxLayout="column">
     <app-custom-toolbar class="ql-toolbar"></app-custom-toolbar>
   </div>
-  <quill-editor [(ngModel)]="step.action" [modules]="modules" class="display"></quill-editor>
   <div fxLayout="row" class="table-header">
     <div fxFlex="3" class="center-content">
       <input type="checkbox" (change)="selectAll($event)" [checked]="selectedAll"/>
@@ -19,12 +18,12 @@
     <div fxFlex="3%" class="table-cell center-content">{{ item.id }}</div>
     <div fxFlex="47%" class="table-cell center-content" (click)="editAction(i)">
       <div *ngIf="editingActionIndex !== i" [innerHTML]="item.action"></div>
-      <quill-editor #quillEditor *ngIf="editingActionIndex === i" [(ngModel)]="item.action" [modules]="modules"
+      <quill-editor #actionEditor *ngIf="editingActionIndex === i" [(ngModel)]="item.action" [modules]="modules"
                     class="custom-editor"></quill-editor>
     </div>
     <div fxFlex="47%" class="table-cell center-content" (click)="editExpectedResult(i)">
       <div *ngIf="editingExpectedResultIndex !== i" [innerHTML]="item.expectedResult"></div>
-      <quill-editor #quillEditor *ngIf="editingExpectedResultIndex === i" [(ngModel)]="item.expectedResult"
+      <quill-editor #resultEditor *ngIf="editingExpectedResultIndex === i" [(ngModel)]="item.expectedResult"
                     [modules]="modules" class="custom-editor"></quill-editor>
     </div>
   </div>

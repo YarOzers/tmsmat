@@ -1,6 +1,6 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, QueryList, ViewChildren} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 import {
   BalloonEditor,
@@ -86,7 +86,7 @@ import {QuillEditorComponent} from "ngx-quill";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {TestCaseService} from "../../services/test-case.service";
 
-export interface Item {
+export interface StepItem {
   selected: boolean;
   id: number;
   action: string;
@@ -94,6 +94,25 @@ export interface Item {
   actionEditor?: BalloonEditor;
   expectedResultEditor?: BalloonEditor;
 }
+
+export interface PreConditionItem {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface PostConditionItem {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
 @Component({
   selector: 'app-test-case',
   standalone: true,
@@ -101,19 +120,32 @@ export interface Item {
   templateUrl: './test-case.component.html',
   styleUrl: './test-case.component.css'
 })
-export class TestCaseComponent implements AfterViewInit{
+export class TestCaseComponent implements OnInit, AfterViewInit {
   @ViewChildren('editorElement') editorElements!: QueryList<ElementRef>;
-  itemId: number = 1;
-  toolbarVisible: boolean = true;
-  protected selectedAll: boolean = false;
+  stepItemId: number = 1;
+  preConditionItemId: number = 1;
+  postConditionItemId: number = 1;
+  protected selectedAllSteps: boolean = false;
+  protected selectedAllPreConditions: boolean = false;
+  protected selectedAllPostConditions: boolean = false;
 
-  items: Item[] = [];
+  stepItems = this.testCaseService.getTestCaseStepItems();
+  preConditionItems = this.testCaseService.getTestCasePreconditionItems();
+  postConditionItems = this.testCaseService.getTestCasePostConditionItems();
 
-  constructor(private changeDetector: ChangeDetectorRef, private testCaseService: TestCaseService) {}
+  constructor(private changeDetector: ChangeDetectorRef, private testCaseService: TestCaseService) {
+  }
+
+  ngOnInit(): void {
+    this.testCaseService.clearTestCaseStepItemsArray();
+    this.testCaseService.clearTestCasePreconditionItemsArray();
+    this.testCaseService.clearTestCasePostConditionItemsArray();
+  }
 
   public isLayoutReady = false;
   public Editor = BalloonEditor;
   public config: any = {};
+
   public ngAfterViewInit(): void {
     this.config = {
       toolbar: {
@@ -285,7 +317,7 @@ export class TestCaseComponent implements AfterViewInit{
           'resizeImage'
         ]
       },
-      initialData:'',
+      initialData: '',
       link: {
         addTargetToExternalLinks: true,
         defaultProtocol: 'https://',
@@ -313,47 +345,132 @@ export class TestCaseComponent implements AfterViewInit{
 
     this.isLayoutReady = true;
     this.changeDetector.detectChanges();
-    this.addItem();
+    this.addStepItem();
+    this.addPreConditionItem();
+    this.addPostConditionItem();
   }
 
-  selectAll(event: Event): void {
+  selectAllSteps(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    this.items.forEach(item => item.selected = checked);
-    this.selectedAll = checked;
+    this.stepItems.forEach(item => item.selected = checked);
+    this.selectedAllSteps = checked;
+  }
+  selectAllPreConditions(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.preConditionItems.forEach(item => item.selected = checked);
+    this.selectedAllPreConditions = checked;
+  }
+  selectAllPostConditions(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.postConditionItems.forEach(item => item.selected = checked);
+    this.selectedAllPostConditions = checked;
   }
 
-  addItem() {
-    this.items.push({ selected: false, id: this.itemId, action: '', expectedResult: '' });
-    this.itemId = this.itemId + 1;
-    this.updateSelectAllState();
-    console.log(this.items)
+  addStepItem() {
+    this.stepItems.push({selected: false, id: this.stepItemId, action: '', expectedResult: ''});
+    this.stepItemId = this.stepItemId + 1;
+    this.updateSelectAllStepsState();
+    console.log(this.stepItems);
   }
 
-  deleteSelected(): void {
-    this.items = this.items.filter(item => !item.selected);
-    this.reorderIds();
-    if (this.selectedAll) {
-      this.selectedAll = false;
-      this.itemId = 1;
+  addPreConditionItem() {
+    this.preConditionItems.push({selected: false, id: this.preConditionItemId, action: '', expectedResult: ''});
+    this.preConditionItemId = this.preConditionItemId + 1;
+    this.updateSelectAllStepsState();
+    console.log(this.preConditionItems);
+  }
+
+  addPostConditionItem() {
+    this.postConditionItems.push({selected: false, id: this.postConditionItemId, action: '', expectedResult: ''});
+    this.postConditionItemId = this.postConditionItemId + 1;
+    this.updateSelectAllPostConditionsState();
+    console.log(this.postConditionItems);
+  }
+
+  deleteSelectedStep(): void {
+    this.stepItems = this.stepItems.filter(item => !item.selected);
+    this.reorderStepIds();
+    if (this.selectedAllSteps) {
+      this.selectedAllSteps = false;
+      this.stepItemId = 1;
     }
   }
-  updateSelectAllState(): void {
-    this.selectedAll = this.items.every(item => item.selected);
+
+  deleteSelectedPreCondition(): void {
+    this.preConditionItems = this.preConditionItems.filter(item => !item.selected);
+    this.reorderPreConditionIds();
+    if (this.selectedAllPreConditions) {
+      this.selectedAllPreConditions = false;
+      this.stepItemId = 1;
+    }
   }
 
-  reorderIds(): void {
-    this.items.forEach((item, index) => {
+  deleteSelectedPostCondition(): void {
+    this.postConditionItems = this.postConditionItems.filter(item => !item.selected);
+    this.reorderPostConditionIds();
+    if (this.selectedAllPostConditions) {
+      this.selectedAllPostConditions = false;
+      this.stepItemId = 1;
+    }
+  }
+
+  updateSelectAllStepsState(): void {
+    this.selectedAllSteps = this.stepItems.every((item) => item.selected);
+  }
+
+  updateSelectAllPreConditionsState(): void {
+    this.selectedAllPreConditions = this.preConditionItems.every((item) => item.selected);
+  }
+
+  updateSelectAllPostConditionsState(): void {
+    this.selectedAllPostConditions = this.postConditionItems.every((item) => item.selected);
+  }
+
+  reorderStepIds(): void {
+    this.stepItems.forEach((item, index) => {
       item.id = index + 1;
     });
+    this.stepItemId = this.stepItems.length + 1;
+  }
+
+  reorderPreConditionIds(): void {
+    this.preConditionItems.forEach((item, index) => {
+      item.id = index + 1;
+    });
+    this.preConditionItemId = this.preConditionItems.length + 1;
+  }
+
+  reorderPostConditionIds(): void {
+    this.postConditionItems.forEach((item, index) => {
+      item.id = index + 1;
+    });
+    this.postConditionItemId = this.postConditionItems.length + 1;
   }
 
 
-  onEditorReady(event: any, item: Item, editorField: 'actionEditor' | 'expectedResultEditor'): void {
+  onStepEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
     item[editorField] = event.editor;
   }
 
-  saveTestCase() {
-    this.testCaseService.setItems(this.items);
-    this.testCaseService.saveTestCase();
+  onPreConditionEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
+    item[editorField] = event.editor;
+  }
+
+  onPostConditionEditorReady(event: any, item: any, editorField: 'actionEditor' | 'expectedResultEditor'): void {
+    item[editorField] = event.editor;
+  }
+
+  saveSteps() {
+    this.testCaseService.setStepItems(this.stepItems);
+    this.testCaseService.saveTestCaseStepItems();
+  }
+
+  savePreConditions() {
+    this.testCaseService.setPreconditionItems(this.preConditionItems);
+    this.testCaseService.saveTestCasePreConditionItems();
+  }
+  savePostConditions() {
+    this.testCaseService.setPostConditionItems(this.postConditionItems);
+    this.testCaseService.saveTestCasePostConditionItems();
   }
 }

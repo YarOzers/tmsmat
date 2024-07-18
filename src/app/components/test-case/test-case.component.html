@@ -7,30 +7,30 @@
 
     </div>
   </div>
-
-
+<!---->
+  <div>Предусловия:</div>
   <div fxLayout="column">
     <div fxLayout="row" class="table-header">
       <div fxFlex="3" class="center-content">
-        <input type="checkbox" (change)="selectAll($event)" [checked]="selectedAll"/>
+        <input type="checkbox" (change)="selectAllPreConditions($event)" [checked]="selectedAllPreConditions"/>
       </div>
       <div fxFlex="3%" class="center-content">ID</div>
       <div fxFlex="47%">Действие</div>
       <div fxFlex="47%">Ожидаемый результат</div>
     </div>
     <div class="outline">
-      <div *ngFor="let item of items; let i = index" fxLayout="row" class="table-row">
+      <div *ngFor="let preConditionItem of preConditionItems; let i = index" fxLayout="row" class="table-row">
         <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">
-          <input type="checkbox" [(ngModel)]="item.selected" (change)="updateSelectAllState()"/>
+          <input type="checkbox" [(ngModel)]="preConditionItem.selected" (change)="updateSelectAllPreConditionsState()"/>
         </div>
-        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">{{ item.id }}</div>
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">{{ preConditionItem.id }}</div>
         <div fxFlex="47%" class="table-cell-left center-content">
           <div class="editor-container__editor">
             <ckeditor
               [editor]="Editor"
-              [(ngModel)]="item.action"
+              [(ngModel)]="preConditionItem.action"
               [config]="config"
-              (ready)="onEditorReady($event, item, 'actionEditor')"
+              (ready)="onStepEditorReady($event, preConditionItem, 'actionEditor')"
             ></ckeditor>
           </div>
         </div>
@@ -38,9 +38,9 @@
           <div class="editor-container__editor">
             <ckeditor
               [editor]="Editor"
-              [(ngModel)]="item.expectedResult"
+              [(ngModel)]="preConditionItem.expectedResult"
               [config]="config"
-              (ready)="onEditorReady($event, item, 'expectedResultEditor')"
+              (ready)="onStepEditorReady($event, preConditionItem, 'expectedResultEditor')"
             ></ckeditor>
           </div>
         </div>
@@ -48,8 +48,99 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="end end">
-    <button mat-button fxLayoutAlign="start center" (click)="deleteSelected()">Удалить шаг</button>
-    <button mat-button fxLayoutAlign="start center" (click)="addItem()">Добавить шаг</button>
-    <button mat-button fxLayoutAlign="start center" (click)="saveTestCase()">Сохранить изменения</button>
+    <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedPreCondition()">Удалить предусловие</button>
+    <button mat-button fxLayoutAlign="start center" (click)="addPreConditionItem()">Добавить предусловие</button>
+    <button mat-button fxLayoutAlign="start center" (click)="savePreConditions()">Сохранить изменения</button>
   </div>
+<!--  Шаги-->
+  <div>Шаги:</div>
+  <div fxLayout="column">
+    <div fxLayout="row" class="table-header">
+      <div fxFlex="3" class="center-content">
+        <input type="checkbox" (change)="selectAllSteps($event)" [checked]="selectedAllSteps"/>
+      </div>
+      <div fxFlex="3%" class="center-content">ID</div>
+      <div fxFlex="47%">Действие</div>
+      <div fxFlex="47%">Ожидаемый результат</div>
+    </div>
+    <div class="outline">
+      <div *ngFor="let step of stepItems; let i = index" fxLayout="row" class="table-row">
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">
+          <input type="checkbox" [(ngModel)]="step.selected" (change)="updateSelectAllPostConditionsState()"/>
+        </div>
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">{{ step.id }}</div>
+        <div fxFlex="47%" class="table-cell-left center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="step.action"
+              [config]="config"
+              (ready)="onStepEditorReady($event, step, 'actionEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+        <div fxFlex="47%" class="table-cell-right center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="step.expectedResult"
+              [config]="config"
+              (ready)="onStepEditorReady($event, step, 'expectedResultEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedStep()">Удалить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="addStepItem()">Добавить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="saveSteps()">Сохранить изменения</button>
+  </div>
+<!--  Постусловия-->
+<div>Постусловия:</div>
+  <div fxLayout="column">
+    <div fxLayout="row" class="table-header">
+      <div fxFlex="3" class="center-content">
+        <input type="checkbox" (change)="selectAllPostConditions($event)" [checked]="selectedAllPostConditions"/>
+      </div>
+      <div fxFlex="3%" class="center-content">ID</div>
+      <div fxFlex="47%">Действие</div>
+      <div fxFlex="47%">Ожидаемый результат</div>
+    </div>
+    <div class="outline">
+      <div *ngFor="let postCondition of postConditionItems; let i = index" fxLayout="row" class="table-row">
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">
+          <input type="checkbox" [(ngModel)]="postCondition.selected" (change)="updateSelectAllPostConditionsState()"/>
+        </div>
+        <div fxFlex="3%" fxLayout="row" fxLayoutAlign="center center">{{ postCondition.id }}</div>
+        <div fxFlex="47%" class="table-cell-left center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="postCondition.action"
+              [config]="config"
+              (ready)="onStepEditorReady($event, postCondition, 'actionEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+        <div fxFlex="47%" class="table-cell-right center-content">
+          <div class="editor-container__editor">
+            <ckeditor
+              [editor]="Editor"
+              [(ngModel)]="postCondition.expectedResult"
+              [config]="config"
+              (ready)="onStepEditorReady($event, postCondition, 'expectedResultEditor')"
+            ></ckeditor>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedPostCondition()">Удалить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="addPostConditionItem()">Добавить шаг</button>
+    <button mat-button fxLayoutAlign="start center" (click)="savePostConditions()">Сохранить изменения</button>
+  </div>
+<!--  -->
 </div>

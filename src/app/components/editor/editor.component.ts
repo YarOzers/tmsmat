@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, ElementRef, NgModule, QueryList, Renderer2, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, NgModule, Renderer2, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {QuillModule} from "ngx-quill";
+import {QuillEditorComponent, QuillModule} from "ngx-quill";
 import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatButton} from "@angular/material/button";
@@ -55,34 +55,35 @@ interface Item {
     NoHtmlPipePipe
   ],
   templateUrl: './editor.component.html',
-  styleUrl: './editor.component.css'
+  styleUrls: ['./editor.component.css']
 })
-export class EditorComponent implements AfterViewInit{
-  @ViewChildren('quillEditor') quillEditors!: QueryList<ElementRef>;
+export class EditorComponent implements AfterViewInit {
+  @ViewChild('actionEditor') actionEditor!: QuillEditorComponent;
+  @ViewChild('resultEditor') resultEditor!: QuillEditorComponent;
+
   itemId: number = 2;
   editingActionIndex: number | null = null;
   editingExpectedResultIndex: number | null = null;
   toolbarVisible: boolean = true;
 
-  step: Item =
-    {
-      selected:false,
-      id: 0,
-      action: '',
-      expectedResult: ''
-    }
+  step: Item = {
+    selected: false,
+    id: 0,
+    action: '',
+    expectedResult: ''
+  };
   modules = {
     toolbar: '#custom-toolbar'
   };
   protected selectedAll: boolean = false;
+
   constructor(private renderer: Renderer2) {
   }
-  ngAfterViewInit() {
 
+  ngAfterViewInit() {
+    this.initEditor();
   }
 
-
-  //  самодельная таблица
   items: Item[] = [
     {
       selected: false,
@@ -90,8 +91,13 @@ export class EditorComponent implements AfterViewInit{
       action: '',
       expectedResult: ''
     }
-
   ];
+
+  initEditor() {
+    if (!this.actionEditor || !this.resultEditor) {
+      console.error("Editor components are not initialized properly in ngAfterViewInit.");
+    }
+  }
 
   selectAll(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
@@ -100,7 +106,7 @@ export class EditorComponent implements AfterViewInit{
   }
 
   addItem() {
-    this.items.push({selected:false, id:this.itemId , action: '',expectedResult: ''});
+    this.items.push({selected: false, id: this.itemId, action: '', expectedResult: ''});
     this.itemId = this.itemId + 1;
     this.updateSelectAllState();
   }
@@ -108,7 +114,7 @@ export class EditorComponent implements AfterViewInit{
   deleteSelected(): void {
     this.items = this.items.filter(item => !item.selected);
     this.reorderIds();
-    if (this.selectedAll){
+    if (this.selectedAll) {
       this.selectedAll = false;
       this.itemId = 1;
     }
@@ -127,13 +133,36 @@ export class EditorComponent implements AfterViewInit{
   }
 
   editAction(index: number): void {
-    this.editingActionIndex = index;
-    this.editingExpectedResultIndex = null;
+    this.initEditor();
+    if (index >= 0 && index < this.items.length) {
+      this.editingActionIndex = index;
+      this.editingExpectedResultIndex = null;
+      this.focusEditor(this.actionEditor);
+    } else {
+      console.error("Invalid index for editAction: ", index);
+    }
   }
 
   editExpectedResult(index: number): void {
-    this.editingExpectedResultIndex = index;
-    this.editingActionIndex = null;
+    this.initEditor();
+    if (index >= 0 && index < this.items.length) {
+      this.editingExpectedResultIndex = index;
+      this.editingActionIndex = null;
+      this.focusEditor(this.resultEditor);
+    } else {
+      console.error("Invalid index for editExpectedResult: ", index);
+    }
+  }
+
+  focusEditor(editor: QuillEditorComponent): void {
+    setTimeout(() => {
+      if (editor && editor.quillEditor) {
+        const quill = editor.quillEditor;
+        quill.focus();
+      } else {
+        console.error("Editor or quillEditor is not defined or initialized yet.");
+      }
+    }, 100); // Adjust the delay as needed
   }
 
   stripHtml(html: string): string {
@@ -143,7 +172,11 @@ export class EditorComponent implements AfterViewInit{
   }
 
   updateSelectAllState(): void {
-    this.selectedAll = this.items.every(item => item.selected);
+    if (this.items) {
+      this.selectedAll = this.items.every(item => item.selected);
+    } else {
+      console.error("Items array is not defined.");
+    }
   }
 }
 
@@ -161,6 +194,5 @@ export class EditorComponent implements AfterViewInit{
     })
   ]
 })
-
 class QuillConfigModule {
 }
