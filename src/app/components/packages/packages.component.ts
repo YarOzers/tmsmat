@@ -16,6 +16,7 @@ import { NgIf } from "@angular/common";
 import {MatFormField} from "@angular/material/form-field";
 import {FormsModule} from "@angular/forms";
 import {MatInput} from "@angular/material/input";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 
 export interface FileNode {
   name: string;
@@ -150,17 +151,48 @@ export class PackagesComponent {
     });
   }
 
-  deleteFolder(node: FlatNode): void {
-    const parentTreeNode = this.getParentTreeNodeByFlatNode(node);
-    if (parentTreeNode && parentTreeNode.children) {
-      parentTreeNode.children = parentTreeNode.children.filter(child => child.name !== node.name);
-    } else {
-      const index = this.dataSource.data.indexOf(this.getTreeNodeByFlatNode(node));
-      if (index > -1) {
-        this.dataSource.data.splice(index, 1);
+  addRootFolder(): void {
+    const dialogRef = this.dialog.open(NameDialogComponent, {
+      width: '300px',
+      data: { name: '', action: 'Добавить папку' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newFolder: TreeNode = {
+          name: result,
+          type: 'folder',
+          children: []
+        };
+        this.dataSource.data.push(newFolder);
+        this.updateTreeControl();
       }
-    }
-    this.updateTreeControl();
+    });
+  }
+
+  deleteFolder(node: FlatNode): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title: 'Подтверждение удаления',
+        message: `Вы уверены, что хотите удалить папку "${node.name}" и все её содержимое?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const parentTreeNode = this.getParentTreeNodeByFlatNode(node);
+        if (parentTreeNode && parentTreeNode.children) {
+          parentTreeNode.children = parentTreeNode.children.filter(child => child.name !== node.name);
+        } else {
+          const index = this.dataSource.data.indexOf(this.getTreeNodeByFlatNode(node));
+          if (index > -1) {
+            this.dataSource.data.splice(index, 1);
+          }
+        }
+        this.updateTreeControl();
+      }
+    });
   }
 
   editFolderName(node: FlatNode): void {
