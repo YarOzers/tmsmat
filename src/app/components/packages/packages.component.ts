@@ -1,22 +1,13 @@
-import { Component, Inject } from '@angular/core';
-import { MatTreeModule, MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import {MatButton, MatButtonModule} from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogTitle,
-  MatDialogContent,
-  MatDialogActions
-} from '@angular/material/dialog';
-import { NgIf } from "@angular/common";
-import {MatFormField} from "@angular/material/form-field";
-import {FormsModule} from "@angular/forms";
-import {MatInput} from "@angular/material/input";
+import {Component} from '@angular/core';
+import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule} from '@angular/material/tree';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {NgIf} from "@angular/common";
 import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
+import {NameDialogComponent} from "../name-dialog/name-dialog.component";
 
 export interface FileNode {
   name: string;
@@ -50,11 +41,11 @@ const TREE_DATA: TreeNode[] = [
             name: 'cdk',
             type: 'folder',
             children: [
-              { name: 'package.json', type: 'file' },
-              { name: 'BUILD.bazel', type: 'file' },
+              {name: 'package.json', type: 'file'},
+              {name: 'BUILD.bazel', type: 'file'},
             ]
           },
-          { name: 'material', type: 'folder' }
+          {name: 'material', type: 'folder'}
         ]
       }
     ]
@@ -67,19 +58,19 @@ const TREE_DATA: TreeNode[] = [
         name: 'packages',
         type: 'folder',
         children: [
-          { name: '.travis.yml', type: 'file' },
-          { name: 'firebase.json', type: 'file' }
+          {name: '.travis.yml', type: 'file'},
+          {name: 'firebase.json', type: 'file'}
         ]
       },
-      { name: 'package.json', type: 'file' }
+      {name: 'package.json', type: 'file'}
     ]
   },
   {
     name: 'angularjs',
     type: 'folder',
     children: [
-      { name: 'gulpfile.js', type: 'file' },
-      { name: 'README.md', type: 'file' }
+      {name: 'gulpfile.js', type: 'file'},
+      {name: 'README.md', type: 'file'}
     ]
   }
 ];
@@ -131,7 +122,7 @@ export class PackagesComponent {
       if (folderName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newFolder: TreeNode = { name: folderName, type: 'folder', children: [] };
+          const newFolder: TreeNode = {name: folderName, type: 'folder', children: []};
           const newFolderFlatNode: FlatNode = {
             name: folderName,
             type: 'folder',
@@ -154,7 +145,7 @@ export class PackagesComponent {
   addRootFolder(): void {
     const dialogRef = this.dialog.open(NameDialogComponent, {
       width: '300px',
-      data: { name: '', action: 'Добавить папку' }
+      data: {name: '', action: 'Добавить папку'}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -211,7 +202,7 @@ export class PackagesComponent {
       if (testCaseName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newTestCase: TreeNode = { name: testCaseName, type: 'file' };
+          const newTestCase: TreeNode = {name: testCaseName, type: 'file'};
           const newTestCaseFlatNode: FlatNode = {
             name: testCaseName,
             type: 'file',
@@ -236,7 +227,7 @@ export class PackagesComponent {
       if (checklistName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newChecklist: TreeNode = { name: checklistName, type: 'file' };
+          const newChecklist: TreeNode = {name: checklistName, type: 'file'};
           const newChecklistFlatNode: FlatNode = {
             name: checklistName,
             type: 'file',
@@ -282,7 +273,7 @@ export class PackagesComponent {
   openDialog(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
     return this.dialog.open(NameDialogComponent, {
       width: '250px',
-      data: { name: currentName, action }
+      data: {name: currentName, action}
     });
   }
 
@@ -337,43 +328,3 @@ export class PackagesComponent {
   }
 }
 
-@Component({
-  selector: 'name-dialog',
-  template: `
-    <h1 mat-dialog-title>{{ data.action }}</h1>
-    <div mat-dialog-content>
-      <mat-form-field>
-        <input matInput [(ngModel)]="data.name" placeholder="Name">
-      </mat-form-field>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-button (click)="onSave()">Save</button>
-    </div>
-  `,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatFormField,
-    FormsModule,
-    MatInput,
-    MatDialogActions,
-    MatButton
-  ],
-  standalone: true
-})
-export class NameDialogComponent {
-
-  constructor(
-    public dialogRef: MatDialogRef<NameDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { name: string, action: string }
-  ) { }
-
-  onCancel(): void {
-    this.dialogRef.close();
-  }
-
-  onSave(): void {
-    this.dialogRef.close(this.data.name);
-  }
-}
