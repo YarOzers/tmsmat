@@ -1,4 +1,5 @@
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- Node for leaf items -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="tree-node">
     <button mat-icon-button disabled></button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
@@ -9,25 +10,50 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
-      </button>
-      <button mat-menu-item disabled>
-        <mat-icon>voicemail</mat-icon>
-        <span>Check voice mail</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>notifications_off</mat-icon>
-        <span>Disable alerts</span>
-      </button>
+      <ng-container *ngIf="node.type === 'file'; else folderMenu">
+        <button mat-menu-item (click)="editFile(node)">
+          <mat-icon>edit</mat-icon>
+          <span>Редактировать</span>
+        </button>
+        <button mat-menu-item (click)="deleteFile(node)">
+          <mat-icon>delete</mat-icon>
+          <span>Удалить</span>
+        </button>
+      </ng-container>
+      <ng-template #folderMenu>
+        <button mat-menu-item (click)="collapseAllChildren(node)">
+          <mat-icon>expand_less</mat-icon>
+          <span>Свернуть все дочерние элементы</span>
+        </button>
+        <button mat-menu-item (click)="addFolder(node)">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>Добавить папку</span>
+        </button>
+        <button mat-menu-item (click)="deleteFolder(node)">
+          <mat-icon>delete</mat-icon>
+          <span>Удалить папку</span>
+        </button>
+        <button mat-menu-item (click)="editFolderName(node)">
+          <mat-icon>edit</mat-icon>
+          <span>Редактировать имя</span>
+        </button>
+        <button mat-menu-item (click)="addTestCase(node)">
+          <mat-icon>note_add</mat-icon>
+          <span>Добавить тест-кейс</span>
+        </button>
+        <button mat-menu-item (click)="addChecklist(node)">
+          <mat-icon>check_box</mat-icon>
+          <span>Добавить чек-лист</span>
+        </button>
+      </ng-template>
     </mat-menu>
   </mat-tree-node>
 
+  <!-- Node with child nodes -->
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="tree-node">
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
       <mat-icon class="mat-icon-rtl-mirror">
-        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
@@ -38,18 +64,42 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
-      </button>
-      <button mat-menu-item disabled>
-        <mat-icon>voicemail</mat-icon>
-        <span>Check voice mail</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>notifications_off</mat-icon>
-        <span>Disable alerts</span>
-      </button>
+      <ng-container *ngIf="node.type === 'file'; else folderMenu">
+        <button mat-menu-item (click)="editFile(node)">
+          <mat-icon>edit</mat-icon>
+          <span>Редактировать</span>
+        </button>
+        <button mat-menu-item (click)="deleteFile(node)">
+          <mat-icon>delete</mat-icon>
+          <span>Удалить</span>
+        </button>
+      </ng-container>
+      <ng-template #folderMenu>
+        <button mat-menu-item (click)="collapseAllChildren(node)">
+          <mat-icon>expand_less</mat-icon>
+          <span>Свернуть все дочерние элементы</span>
+        </button>
+        <button mat-menu-item (click)="addFolder(node)">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>Добавить папку</span>
+        </button>
+        <button mat-menu-item (click)="deleteFolder(node)">
+          <mat-icon>delete</mat-icon>
+          <span>Удалить папку</span>
+        </button>
+        <button mat-menu-item (click)="editFolderName(node)">
+          <mat-icon>edit</mat-icon>
+          <span>Редактировать имя</span>
+        </button>
+        <button mat-menu-item (click)="addTestCase(node)">
+          <mat-icon>note_add</mat-icon>
+          <span>Добавить тест-кейс</span>
+        </button>
+        <button mat-menu-item (click)="addChecklist(node)">
+          <mat-icon>check_box</mat-icon>
+          <span>Добавить чек-лист</span>
+        </button>
+      </ng-template>
     </mat-menu>
   </mat-tree-node>
 </mat-tree>
