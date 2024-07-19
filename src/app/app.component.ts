@@ -4,11 +4,12 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {PackagesComponent} from "./components/packages/packages.component";
 import {TestCaseListComponent} from "./components/test-case-list/test-case-list.component";
 import {TopMenuComponent} from "./components/top-menu/top-menu.component";
+import {SplitAreaComponent, SplitComponent} from "angular-split";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FlexLayoutModule, PackagesComponent, TestCaseListComponent, TopMenuComponent],
+  imports: [RouterOutlet, FlexLayoutModule, PackagesComponent, TestCaseListComponent, TopMenuComponent, SplitComponent, SplitAreaComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

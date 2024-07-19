@@ -4,6 +4,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { files } from './example-data';
+import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 
 /** File node data with possible child nodes. */
 export interface FileNode {
@@ -28,7 +29,7 @@ export interface FlatTreeNode {
   templateUrl: './packages.component.html',
   styleUrl: './packages.component.css',
   standalone: true,
-  imports: [MatTreeModule, MatButtonModule, MatIconModule]
+  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu]
 })
 export class PackagesComponent {
 

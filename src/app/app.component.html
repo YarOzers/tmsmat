@@ -2,13 +2,17 @@
   <div class="header" fxLayout="row" fxLayoutAlign="start start">
     <app-top-menu></app-top-menu>
   </div>
-  <div fxLayout="row" fxFlexFill>
-    <div fxFlex="20" class="left-column">
-      <app-packages></app-packages>
-    </div>
-    <div fxFlex="80" class="right-column">
-      <app-test-case-list></app-test-case-list>
-    </div>
-  </div>
+  <as-split [direction]="'horizontal'">
+    <as-split-area [size]="20">
+      <div class="left-column">
+        <app-packages></app-packages>
+      </div>
+    </as-split-area>
+    <as-split-area [size]="80">
+      <div class="right-column">
+        <app-test-case-list></app-test-case-list>
+      </div>
+    </as-split-area>
+  </as-split>
 </div>
-<router-outlet />
+<router-outlet></router-outlet>

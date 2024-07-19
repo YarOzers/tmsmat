@@ -16,11 +16,11 @@
   overflow: hidden; /* предотвращает появление прокрутки */
 }
 
-.left-column {
-  background-color: #f1f1f1;
-  padding: 10px;
-  overflow-y: auto; /* прокрутка появляется только при переполнении */
-}
+/*.left-column {*/
+/*  background-color: #f1f1f1;*/
+/*  padding: 10px;*/
+/*  overflow-y: auto; !* прокрутка появляется только при переполнении *!*/
+/*}*/
 
 .right-column {
   background-color: #ffffff;
@@ -40,4 +40,25 @@
   overflow: hidden;
 }
 
+/*              -----------------              */
+/*.left-column {*/
+/*  background-color: #f0f0f0; !* Светло-серый фон для левой колонки *!*/
+/*}*/
 
+.right-column {
+  background-color: #ffffff; /* Белый фон для правой колонки */
+}
+
+.container {
+  height: 100vh;
+}
+
+/*.header {*/
+/*  background-color: #ddd; !* Цвет фона для шапки *!*/
+/*  height: 50px;*/
+/*  width: 100%;*/
+/*}*/
+
+as-split {
+  height: calc(100vh - 50px); /* Высота контейнера, минус высота шапки */
+}

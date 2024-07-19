@@ -2,3 +2,23 @@
   color: #757575;
   margin-right: 5px;
 }
+
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.node-name {
+  flex-grow: 1;
+}
+
+.menu-button {
+  display: none;
+  margin-left: auto;
+}
+
+.tree-node:hover .menu-button {
+  display: inline-flex;
+}
