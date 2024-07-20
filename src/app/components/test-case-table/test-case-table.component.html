@@ -1,3 +1,8 @@
+<!-- Кнопка для открытия меню -->
+<button mat-icon-button [matMenuTriggerFor]="columnMenu">
+  <mat-icon>view_column</mat-icon>
+</button>
+
 <div class="table-container" cdkDropListGroup>
   <div class="column-drop-list" cdkDropList [cdkDropListData]="displayedColumns" (cdkDropListDropped)="dropColumn($event)">
     <table mat-table [dataSource]="dataSource" matSort>
@@ -31,7 +36,7 @@
 
       <!-- Строки таблицы -->
       <tr mat-header-row *matHeaderRowDef="headerColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsWithSelectAndRun"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsWithSelectAndRun" cdkDrag (cdkDragStarted)="onDragStarted(row)" (cdkDragEnded)="onDragEnded()"></tr>
     </table>
   </div>
 </div>
@@ -43,10 +48,8 @@
   </mat-checkbox>
 </mat-menu>
 
-<!-- Кнопка для открытия меню -->
-<button mat-icon-button [matMenuTriggerFor]="columnMenu">
-  <mat-icon>view_column</mat-icon>
-</button>
+
 
 <!-- Общая кнопка для запуска выбранных автотестов -->
 <button mat-icon-button (click)="runSelectedTests()"><mat-icon>touch_app</mat-icon></button>
+<button mat-icon-button ><mat-icon>create</mat-icon></button>

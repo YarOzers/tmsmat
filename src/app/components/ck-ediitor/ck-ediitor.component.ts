@@ -1,5 +1,5 @@
 import { Component,ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 import {
@@ -58,7 +58,7 @@ import {
   TodoList,
   Underline,
   Undo,
-  type EditorConfig
+  type EditorConfig, Editor
 } from 'ckeditor5';
 
 import translations from 'ckeditor5/translations/ru.js';
@@ -68,10 +68,14 @@ import 'ckeditor5/ckeditor5.css';
 @Component({
   selector: 'app-ck-ediitor',
   standalone: true,
-  imports: [],
+  imports: [
+    CKEditorModule,
+    NgIf
+  ],
   templateUrl: './ck-ediitor.component.html',
   styleUrl: './ck-ediitor.component.css'
 })
 export class CkEdiitorComponent {
 
+  protected readonly Editor = Editor;
 }
