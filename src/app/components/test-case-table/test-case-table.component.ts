@@ -1,14 +1,17 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {NgForOf, NgIf, TitleCasePipe} from "@angular/common";
 import {
-  MatCell, MatCellDef,
+  MatCell,
+  MatCellDef,
   MatColumnDef,
-  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
   MatRow,
   MatRowDef,
-  MatTable, MatTableDataSource
+  MatTable,
+  MatTableDataSource
 } from "@angular/material/table";
 import {MatSort, MatSortModule} from "@angular/material/sort";
 import {MatCheckbox} from "@angular/material/checkbox";
@@ -25,6 +28,8 @@ import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
+import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
 
 interface TestCaseTablePresentation {
   id: number;
@@ -46,6 +51,7 @@ const ELEMENT_DATA: TestCaseTablePresentation[] = [
   { id: 6, name: 'Test Case 6', priority: 'Medium', author: 'Author 6', type: 'Regression', auto: true  },
   // ...добавьте другие тестовые данные
 ];
+
 @Component({
   selector: 'app-test-case-table',
   standalone: true,
@@ -76,7 +82,9 @@ const ELEMENT_DATA: TestCaseTablePresentation[] = [
     FormsModule,
     MatButton,
     NgIf,
-    MatProgressSpinner
+    MatProgressSpinner,
+    CreateTestCaseComponent,
+    FullscreenModalComponent
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
@@ -165,5 +173,16 @@ export class TestCaseTableComponent implements AfterViewInit{
   runSelectedTests() {
     const selectedTests = this.dataSource.data.filter(element => element.auto && element.selected);
     selectedTests.forEach(testCase => this.runTest(testCase));
+  }
+
+
+  isModalOpen = false;
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  handleModalClose() {
+    this.isModalOpen = false;
   }
 }

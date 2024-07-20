@@ -358,9 +358,9 @@ export class TestCaseComponent implements OnInit, AfterViewInit {
 
     this.isLayoutReady = true;
     this.changeDetector.detectChanges();
-    this.addStepItem();
-    this.addPreConditionItem();
-    this.addPostConditionItem();
+    // this.addStepItem();
+    // this.addPreConditionItem();
+    // this.addPostConditionItem();
     this.initializeEditors();
   }
   initializeEditors(): void {

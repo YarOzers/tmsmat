@@ -1,3 +1,7 @@
+<button mat-icon-button (click)="openModal()"><mat-icon>add</mat-icon></button>
+<!-- Общая кнопка для запуска выбранных автотестов -->
+<button mat-icon-button (click)="runSelectedTests()"><mat-icon>touch_app</mat-icon></button>
+
 <!-- Кнопка для открытия меню -->
 <button mat-icon-button [matMenuTriggerFor]="columnMenu">
   <mat-icon>view_column</mat-icon>
@@ -50,6 +54,6 @@
 
 
 
-<!-- Общая кнопка для запуска выбранных автотестов -->
-<button mat-icon-button (click)="runSelectedTests()"><mat-icon>touch_app</mat-icon></button>
-<button mat-icon-button ><mat-icon>create</mat-icon></button>
+<app-fullscreen-modal [isOpen]="isModalOpen" (close)="handleModalClose()">
+  <app-create-test-case></app-create-test-case>
+</app-fullscreen-modal>
