@@ -1,18 +1,58 @@
 import {Injectable} from '@angular/core';
 import {PostConditionItem, PreConditionItem, StepItem} from '../components/test-case/test-case.component';
 
+const TEST_CASE_DATA: TestCase[] = [];
+
+interface TestCase {
+  id: number;
+  name: string;
+  stepItems: StepItem[] | null;
+  preConditionItems: PreConditionItem[] | null;
+  postConditionItems: PostConditionItem[] | null;
+  priority: string | null;
+  time: string | null;
+  attribute: string | null;
+  folder: string | null;
+}
+
+interface TestCaseTablePresentation{
+  id: number;
+  name: string;
+  priority: string;
+  author: string;
+  type: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TestCaseService {
+  private testCaseId = 0;
+  private testCaseName = '';
   private testCaseStepItemsArray: StepItem[] = [];
   private testCasePreconditionItemsArray: PreConditionItem[] = [];
   private testCasePostconditionItemsArray: PostConditionItem[] = [];
+  private testCasePriority = '';
+  private testCaseTime = '';
+  private testCaseAttribute = '';
+  private testCaseFolder = '';
 
+  private testCase: TestCase = {
+    id: this.testCaseId,
+    name: this.testCaseName,
+    stepItems: this.testCaseStepItemsArray,
+    preConditionItems: this.testCasePreconditionItemsArray,
+    postConditionItems: this.testCasePostconditionItemsArray,
+    priority: this.testCasePriority,
+    time: this.testCaseTime,
+    attribute: this.testCaseAttribute,
+    folder: this.testCaseFolder
+  }
 
-  constructor() {}
+  constructor() {
+  }
 
-  getTestCaseStepItems(): StepItem[]{
+  getTestCaseStepItems(): StepItem[] {
     return this.testCaseStepItemsArray;
   }
 
@@ -27,7 +67,8 @@ export class TestCaseService {
   clearTestCaseStepItemsArray(): void {
     this.testCaseStepItemsArray = [];
   }
-  getTestCasePreconditionItems(): StepItem[]{
+
+  getTestCasePreconditionItems(): StepItem[] {
     return this.testCasePreconditionItemsArray;
   }
 
@@ -43,7 +84,7 @@ export class TestCaseService {
     this.testCasePreconditionItemsArray = [];
   }
 
-  getTestCasePostConditionItems(): StepItem[]{
+  getTestCasePostConditionItems(): StepItem[] {
     return this.testCasePostconditionItemsArray;
   }
 
@@ -102,5 +143,32 @@ export class TestCaseService {
     console.log(this.testCasePostconditionItemsArray); // Для проверки, что данные корректно обновлены
     // Здесь можно добавить вызов сервиса для сохранения данных, например:
     // this.http.post('/api/saveTestCase', this.items).subscribe();
+  }
+
+  saveTestCase(){
+    TEST_CASE_DATA.push(this.testCase);
+  }
+  setTestCaseId(id: number){
+    this.testCaseId = id;
+  }
+
+  setTestCaseName(name: string){
+    this.testCaseName = name;
+  }
+
+  setTestCasePriority(priority: string){
+    this.testCasePriority = priority;
+  }
+
+  setTestCaseTime(time: string){
+    this.testCaseTime = time;
+  }
+
+  setTestCaseAttribute(attribute: string){
+    this.testCaseAttribute = attribute;
+  }
+
+  getTestCaseData(){
+    return TEST_CASE_DATA;
   }
 }

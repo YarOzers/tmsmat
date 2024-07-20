@@ -197,8 +197,33 @@ export class PackagesComponent {
     });
   }
 
+  // addTestCase(node: FlatNode): void {
+  //   this.openDialog('Add Test Case').afterClosed().subscribe(testCaseName => {
+  //     if (testCaseName) {
+  //       const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
+  //       if (parentNodeIndex !== -1) {
+  //         const newTestCase: TreeNode = {name: testCaseName, type: 'file'};
+  //         const newTestCaseFlatNode: FlatNode = {
+  //           name: testCaseName,
+  //           type: 'file',
+  //           level: node.level + 1,
+  //           expandable: false
+  //         };
+  //         const parentTreeNode = this.getTreeNodeByFlatNode(node);
+  //         if (parentTreeNode.children) {
+  //           parentTreeNode.children.push(newTestCase);
+  //         } else {
+  //           parentTreeNode.children = [newTestCase];
+  //         }
+  //         this.updateTreeControl();
+  //         this.treeControl.expand(node);
+  //       }
+  //     }
+  //   });
+  // }
+
   addTestCase(node: FlatNode): void {
-    this.openDialog('Add Test Case').afterClosed().subscribe(testCaseName => {
+    this.openCreateTestCase('Add Test Case').afterClosed().subscribe(testCaseName => {
       if (testCaseName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
@@ -271,6 +296,13 @@ export class PackagesComponent {
   }
 
   openDialog(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
+    return this.dialog.open(NameDialogComponent, {
+      width: '250px',
+      data: {name: currentName, action}
+    });
+  }
+
+  openCreateTestCase(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
     return this.dialog.open(NameDialogComponent, {
       width: '250px',
       data: {name: currentName, action}

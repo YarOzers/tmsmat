@@ -1,0 +1,18 @@
+.table-container {
+  max-width: 100%;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+th.mat-header-cell, td.mat-cell {
+  padding: 8px;
+  text-align: left;
+}
+
+.mat-menu-content {
+  max-height: 300px;
+  overflow: auto;
+}
