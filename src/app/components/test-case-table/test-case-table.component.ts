@@ -24,6 +24,7 @@ import {
 import {MatIcon} from "@angular/material/icon";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {FormsModule} from "@angular/forms";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 interface TestCaseTablePresentation {
   id: number;
@@ -33,6 +34,7 @@ interface TestCaseTablePresentation {
   type: string;
   auto: boolean;
   selected?: boolean;
+  loading?: boolean; // Добавлено свойство для отслеживания состояния загрузки
 }
 
 const ELEMENT_DATA: TestCaseTablePresentation[] = [
@@ -73,7 +75,8 @@ const ELEMENT_DATA: TestCaseTablePresentation[] = [
     CdkDropListGroup,
     FormsModule,
     MatButton,
-    NgIf
+    NgIf,
+    MatProgressSpinner
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
@@ -91,11 +94,11 @@ export class TestCaseTableComponent implements AfterViewInit{
   }
 
   get displayedColumnsWithSelectAndRun(): string[] {
-    return ['select', 'run', ...this.displayedColumns];
+    return ['select', ...this.displayedColumns, 'run'];
   }
 
   get headerColumns(): string[] {
-    return ['select','run', ...this.displayedColumns ];
+    return ['select', ...this.displayedColumns, 'run'];
   }
 
   toggleColumn(column: string) {
@@ -128,8 +131,8 @@ export class TestCaseTableComponent implements AfterViewInit{
     return this.dataSource.data.every(element => element.auto && element.selected);
   }
 
-  isAnySelected(): boolean {
-    return this.dataSource.data.some(element => element.auto && element.selected);
+  isIndeterminate(): boolean {
+    return this.dataSource.data.some(element => element.auto && element.selected) && !this.isAllSelected();
   }
 
   toggleSelectAll(event: any) {
@@ -139,11 +142,24 @@ export class TestCaseTableComponent implements AfterViewInit{
         element.selected = isChecked;
       }
     });
+    this.onCheckboxChange();
+  }
+
+  onCheckboxChange() {
+    // Чтобы триггерить обновление UI
+    this.dataSource.data = [...this.dataSource.data];
   }
 
   runTest(testCase: TestCaseTablePresentation) {
     console.log(`Running test: ${testCase.name}`);
-    // Здесь можно добавить логику для запуска автотеста
+    testCase.loading = true; // Включаем лоадер
+
+    // Эмулируем выполнение автотеста с помощью таймера
+    setTimeout(() => {
+      testCase.loading = false; // Выключаем лоадер
+      this.dataSource.data = [...this.dataSource.data]; // Обновляем таблицу для перерисовки
+      console.log(`Test completed: ${testCase.name}`);
+    }, 3000); // Таймер на 3 секунды
   }
 
   runSelectedTests() {
