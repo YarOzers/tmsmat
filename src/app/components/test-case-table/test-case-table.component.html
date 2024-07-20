@@ -1,20 +1,17 @@
-<!-- Кнопка для открытия меню -->
-<button mat-icon-button [matMenuTriggerFor]="columnMenu">
-  <mat-icon>view_column</mat-icon>
-</button>
-<div class="table-container" cdkDropList (cdkDropListDropped)="dropTable($event)">
-  <table mat-table [dataSource]="dataSource" matSort>
+<div class="table-container" cdkDropListGroup>
+  <div class="column-drop-list" cdkDropList [cdkDropListData]="displayedColumns" (cdkDropListDropped)="dropColumn($event)">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <!-- Определение колонок -->
+      <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag>{{ column | titlecase }}</th>
+        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+      </ng-container>
 
-    <!-- Определение колонок -->
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column | titlecase }}</th>
-      <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
-    </ng-container>
-
-    <!-- Строки таблицы -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag cdkDragHandle></tr>
-  </table>
+      <!-- Строки таблицы -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag (cdkDragStarted)="onDragStarted(row)" (cdkDragEnded)="onDragEnded()"></tr>
+    </table>
+  </div>
 </div>
 
 <!-- Меню для выбора колонок -->
@@ -24,4 +21,7 @@
   </mat-checkbox>
 </mat-menu>
 
-
+<!-- Кнопка для открытия меню -->
+<button mat-icon-button [matMenuTriggerFor]="columnMenu">
+  <mat-icon>view_column</mat-icon>
+</button>

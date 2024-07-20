@@ -13,7 +13,14 @@ import {
 import {MatSort, MatSortModule} from "@angular/material/sort";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
-import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  CdkDropListGroup,
+  moveItemInArray
+} from "@angular/cdk/drag-drop";
 import {MatIcon} from "@angular/material/icon";
 import {MatIconButton} from "@angular/material/button";
 
@@ -59,15 +66,17 @@ const ELEMENT_DATA: TestCaseTablePresentation[] = [
     MatIcon,
     MatIconButton,
     CdkDropList,
-    CdkDragHandle
+    CdkDragHandle,
+    CdkDropListGroup
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
 })
-export class TestCaseTableComponent implements OnInit, AfterViewInit{
+export class TestCaseTableComponent implements AfterViewInit{
   displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type'];
   allColumns: string[] = ['id', 'name', 'priority', 'author', 'type'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
+  draggingRow: any = null;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -89,6 +98,15 @@ export class TestCaseTableComponent implements OnInit, AfterViewInit{
     this.dataSource.data = [...this.dataSource.data];
   }
 
-  ngOnInit(): void {
+  dropColumn(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+  }
+
+  onDragStarted(row: any) {
+    this.draggingRow = row;
+  }
+
+  onDragEnded() {
+    this.draggingRow = null;
   }
 }
