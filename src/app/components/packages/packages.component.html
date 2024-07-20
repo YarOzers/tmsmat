@@ -1,6 +1,6 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList (cdkDropListDropped)="drop($event)">
   <!-- Node for leaf items -->
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="tree-node">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="tree-node" cdkDrag>
     <button mat-icon-button disabled></button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
       {{ node.type === 'file' ? 'description' : 'folder' }}
@@ -45,15 +45,19 @@
           <mat-icon>check_box</mat-icon>
           <span>Добавить чек-лист</span>
         </button>
+        <button mat-menu-item (click)="addSuites(node)">
+          <mat-icon>playlist_add</mat-icon>
+          <span>Добавить suite</span>
+        </button>
       </ng-template>
     </mat-menu>
   </mat-tree-node>
 
-  <!-- Node with child nodes -->
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="tree-node">
-    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+  <!-- Node for expandable items -->
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle matTreeNodePadding class="tree-node" cdkDrag>
+    <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
       <mat-icon class="mat-icon-rtl-mirror">
-        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
       </mat-icon>
     </button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
@@ -99,9 +103,11 @@
           <mat-icon>check_box</mat-icon>
           <span>Добавить чек-лист</span>
         </button>
+        <button mat-menu-item (click)="addSuites(node)">
+          <mat-icon>playlist_add</mat-icon>
+          <span>Добавить suite</span>
+        </button>
       </ng-template>
     </mat-menu>
   </mat-tree-node>
 </mat-tree>
-<button mat-icon-button (click)="addRootFolder()"><mat-icon>add</mat-icon>
-</button>

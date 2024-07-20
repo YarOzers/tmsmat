@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {NgIf} from "@angular/common";
 import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {NameDialogComponent} from "../name-dialog/name-dialog.component";
+import {CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
 
 export interface FileNode {
   name: string;
@@ -80,10 +81,9 @@ const TREE_DATA: TreeNode[] = [
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css'],
   standalone: true,
-  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem]
+  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem, CdkDropList]
 })
 export class PackagesComponent {
-
   private _transformer = (node: TreeNode, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -113,6 +113,46 @@ export class PackagesComponent {
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
 
+  drop(event: CdkDragDrop<FlatNode[]>): void {
+    if (!event.isPointerOverContainer) {
+      return;
+    }
+
+    const draggedNode = event.item.data;
+    const parentNode = this.getParentTreeNodeByFlatNode(draggedNode);
+    const targetNode = event.container.data[event.currentIndex];
+
+    if (draggedNode && targetNode) {
+      this.moveNode(draggedNode, parentNode, targetNode);
+    }
+
+    this.updateTreeControl();
+  }
+
+  moveNode(draggedNode: FlatNode, parentNode: TreeNode | null, targetNode: FlatNode): void {
+    if (parentNode) {
+      parentNode.children = parentNode.children?.filter(child => child.name !== draggedNode.name);
+    } else {
+      this.dataSource.data = this.dataSource.data.filter(node => node.name !== draggedNode.name);
+    }
+
+    const targetTreeNode = this.getTreeNodeByFlatNode(targetNode);
+    if (targetTreeNode.children) {
+      targetTreeNode.children.push(this.getTreeNodeByFlatNode(draggedNode));
+    } else {
+      targetTreeNode.children = [this.getTreeNodeByFlatNode(draggedNode)];
+    }
+  }
+  addSuites(node: FlatNode): void {
+    const parentNode = this.getTreeNodeByFlatNode(node);
+    const newNode: TreeNode = { name: 'New Suite', type: 'folder', children: [] };
+    if (parentNode.children) {
+      parentNode.children.push(newNode);
+    } else {
+      parentNode.children = [newNode];
+    }
+    this.updateTreeControl();
+  }
   collapseAllChildren(node: FlatNode): void {
     this.treeControl.dataNodes.forEach(descendant => this.treeControl.collapse(descendant));
   }
@@ -196,31 +236,6 @@ export class PackagesComponent {
       }
     });
   }
-
-  // addTestCase(node: FlatNode): void {
-  //   this.openDialog('Add Test Case').afterClosed().subscribe(testCaseName => {
-  //     if (testCaseName) {
-  //       const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
-  //       if (parentNodeIndex !== -1) {
-  //         const newTestCase: TreeNode = {name: testCaseName, type: 'file'};
-  //         const newTestCaseFlatNode: FlatNode = {
-  //           name: testCaseName,
-  //           type: 'file',
-  //           level: node.level + 1,
-  //           expandable: false
-  //         };
-  //         const parentTreeNode = this.getTreeNodeByFlatNode(node);
-  //         if (parentTreeNode.children) {
-  //           parentTreeNode.children.push(newTestCase);
-  //         } else {
-  //           parentTreeNode.children = [newTestCase];
-  //         }
-  //         this.updateTreeControl();
-  //         this.treeControl.expand(node);
-  //       }
-  //     }
-  //   });
-  // }
 
   addTestCase(node: FlatNode): void {
     this.openCreateTestCase('Add Test Case').afterClosed().subscribe(testCaseName => {
@@ -359,4 +374,3 @@ export class PackagesComponent {
     });
   }
 }
-
