@@ -8,7 +8,7 @@
     <div fxFlex="20" class="left-column">
       <mat-form-field class="select-field">
         <mat-label>Приоритет</mat-label>
-        <mat-select disableRipple>
+        <mat-select [(ngModel)]="priority" disableRipple>
           <mat-option value="1">Самый высокий</mat-option>
           <mat-option value="2">Высокий</mat-option>
           <mat-option value="3">Средний</mat-option>
@@ -18,13 +18,13 @@
       <div>
         <label class="mdc-form-field">
           <span class="mdc-form-field__label">Время выполнения</span>
-          <input type="time" class="mdc-text-field__input">
+          <input type="time" [(ngModel)]="executionTime" class="mdc-text-field__input">
         </label>
       </div>
       <div class="block">
         <mat-form-field class="select-field">
           <mat-label>Признак автоматизации</mat-label>
-          <mat-select disableRipple>
+          <mat-select [(ngModel)]="automationFlag" disableRipple>
             <mat-option value="1">Ручной</mat-option>
             <mat-option value="2">Автоматизирован</mat-option>
           </mat-select>

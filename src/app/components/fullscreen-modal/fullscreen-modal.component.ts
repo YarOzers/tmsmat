@@ -1,6 +1,10 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
+import {TestCase} from "../../interfaces/test-case.interfase";
+import {TestCaseService} from "../../services/test-case.service";
+
+const TEST_CASE_DATA: TestCase[] = [];
 
 @Component({
   selector: 'app-fullscreen-modal',
@@ -14,6 +18,11 @@ import {CreateTestCaseComponent} from "../create-test-case/create-test-case.comp
 export class FullscreenModalComponent {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
+
+  constructor(private testCaseService: TestCaseService) {
+  }
+
+  testCase: TestCase | null = null;
 
   closeModal() {
     this.isOpen = false;

@@ -34,5 +34,7 @@ import {MatOption, MatSelect, MatSelectModule} from "@angular/material/select";
 })
 export class CreateTestCaseComponent {
   testCaseName: string | undefined;
-
+  priority: number | undefined;
+  executionTime: string | undefined;
+  automationFlag: number | undefined;
 }
