@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {PostConditionItem, PreConditionItem, StepItem} from '../components/test-case/test-case.component';
 
+
 const TEST_CASE_DATA: TestCase[] = [];
 
 interface TestCase {
@@ -9,10 +10,9 @@ interface TestCase {
   stepItems: StepItem[] | null;
   preConditionItems: PreConditionItem[] | null;
   postConditionItems: PostConditionItem[] | null;
-  priority: string | null;
-  time: string | null;
-  attribute: string | null;
-  folder: string | null;
+  priority: number | null;
+  executionTime: string | null;
+  automationFlag: number | null;
 }
 
 interface TestCaseTablePresentation{
@@ -27,6 +27,13 @@ interface TestCaseTablePresentation{
   providedIn: 'root'
 })
 export class TestCaseService {
+  get testCaseAutomationFlag(): any {
+    return this._testCaseAutomationFlag;
+  }
+
+  set testCaseAutomationFlag(value: any) {
+    this._testCaseAutomationFlag = value;
+  }
   private testCaseData: TestCase[] = [];
 
   private testCaseId = 0;
@@ -34,10 +41,9 @@ export class TestCaseService {
   private testCaseStepItemsArray: StepItem[] = [];
   private testCasePreconditionItemsArray: PreConditionItem[] = [];
   private testCasePostconditionItemsArray: PostConditionItem[] = [];
-  private testCasePriority = '';
+  private testCasePriority = 1;
   private testCaseTime = '';
-  private testCaseAttribute = '';
-  private testCaseFolder = '';
+  private _testCaseAutomationFlag = null;
 
   private testCase: TestCase = {
     id: this.testCaseId,
@@ -46,10 +52,10 @@ export class TestCaseService {
     preConditionItems: this.testCasePreconditionItemsArray,
     postConditionItems: this.testCasePostconditionItemsArray,
     priority: this.testCasePriority,
-    time: this.testCaseTime,
-    attribute: this.testCaseAttribute,
-    folder: this.testCaseFolder
+    executionTime: this.testCaseTime,
+    automationFlag: this._testCaseAutomationFlag
   }
+
 
   constructor() {
   }
@@ -150,6 +156,7 @@ export class TestCaseService {
   saveTestCase(testCase: TestCase) {
     this.testCaseData.push(testCase);
     console.log('Test case saved:', testCase);
+
   }
   getTestCases(): TestCase[] {
     return this.testCaseData;
@@ -162,7 +169,7 @@ export class TestCaseService {
     this.testCaseName = name;
   }
 
-  setTestCasePriority(priority: string){
+  setTestCasePriority(priority: number){
     this.testCasePriority = priority;
   }
 
@@ -170,9 +177,7 @@ export class TestCaseService {
     this.testCaseTime = time;
   }
 
-  setTestCaseAttribute(attribute: string){
-    this.testCaseAttribute = attribute;
-  }
+
 
   getTestCaseData(){
     return TEST_CASE_DATA;

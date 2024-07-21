@@ -1,4 +1,4 @@
-import {PostConditionItem, PreConditionItem, StepItem} from "../components/test-case/test-case.component";
+import {BalloonEditor} from "ckeditor5";
 
 export interface TestCaseTablePresentation {
   id: number;
@@ -17,8 +17,35 @@ export interface TestCase {
   stepItems: StepItem[] | null;
   preConditionItems: PreConditionItem[] | null;
   postConditionItems: PostConditionItem[] | null;
-  priority: string | null;
+  priority: number | null;
   executionTime: string | null;
-  automationFlag: string | null;
-  // type: string | null;
+  automationFlag: number | null;
+  type: number | null;
+}
+
+export interface StepItem {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface PreConditionItem {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface PostConditionItem {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
 }
