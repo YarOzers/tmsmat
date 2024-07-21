@@ -27,6 +27,8 @@ interface TestCaseTablePresentation{
   providedIn: 'root'
 })
 export class TestCaseService {
+  private testCaseData: TestCase[] = [];
+
   private testCaseId = 0;
   private testCaseName = '';
   private testCaseStepItemsArray: StepItem[] = [];
@@ -145,8 +147,12 @@ export class TestCaseService {
     // this.http.post('/api/saveTestCase', this.items).subscribe();
   }
 
-  saveTestCase(){
-    TEST_CASE_DATA.push(this.testCase);
+  saveTestCase(testCase: TestCase) {
+    this.testCaseData.push(testCase);
+    console.log('Test case saved:', testCase);
+  }
+  getTestCases(): TestCase[] {
+    return this.testCaseData;
   }
   setTestCaseId(id: number){
     this.testCaseId = id;

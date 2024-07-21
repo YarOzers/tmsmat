@@ -18,7 +18,7 @@ export interface TestCase {
   preConditionItems: PreConditionItem[] | null;
   postConditionItems: PostConditionItem[] | null;
   priority: string | null;
-  time: string | null;
-  attribute: string | null;
-  folder: string | null;
+  executionTime: string | null;
+  automationFlag: string | null;
+  // type: string | null;
 }
