@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PostConditionItem, PreConditionItem, StepItem} from '../components/test-case/test-case.component';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {TestCase} from "../interfaces/test-case.interfase";
 
 
@@ -8,6 +8,9 @@ import {TestCase} from "../interfaces/test-case.interfase";
   providedIn: 'root'
 })
 export class TestCaseService {
+
+  private eventSource = new Subject<void>();
+  event$ = this.eventSource.asObservable();
 
   private TEST_CASE_DATA: TestCase[] = [
     {
@@ -281,7 +284,21 @@ export class TestCaseService {
     return this.TEST_CASE_DATA.length;
   }
 
-  selectFolder(folderName: string){
+  setFolderName(folderName: string){
     this.testCaseFolder = folderName;
+  }
+  getFolderName() {
+    return this.testCaseFolder;
+  }
+
+  getTestCaseName() {
+    console.log("from getTestCaseName: ",this.testCaseName)
+    return this.testCase.name;
+  }
+
+  saveTestCase(data: TestCase) {
+    this.testCase = data;
+    console.log("testCase in Service: ", this.testCase);
+    this.eventSource.next();
   }
 }

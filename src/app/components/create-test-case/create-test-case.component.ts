@@ -154,6 +154,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   selectedAllSteps = false;
   selectedAllPreConditions = false;
   selectedAllPostConditions = false;
+  testCaseFolder = '6666666666';
 
   config: any = {};
   readonly Editor = BalloonEditor;
@@ -178,6 +179,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     loading: false,
     folder: null
   }
+
 
 
   getTestCaseData() {
@@ -585,6 +587,8 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
 
   saveTestCase(): void {
     this.testCaseId = this.testCaseService.getTestCaseId();
+    this.testCaseFolder = this.testCaseService.getFolderName();
+    console.log("in saveTestCase() :" , this.testCaseFolder as string)
     this.testCase = {
       id: this.testCaseId = this.testCaseId + 1, // Автоматически увеличиваем ID
       name: this.testCaseName,
@@ -598,7 +602,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
       author: 'Author',
       selected: false,
       loading: false,
-      folder: null
+      folder: this.testCaseFolder
 
     };
     console.log(this.testCase);

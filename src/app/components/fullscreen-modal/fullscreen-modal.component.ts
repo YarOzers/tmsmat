@@ -43,6 +43,8 @@ export class FullscreenModalComponent implements AfterViewInit{
       this.testCase = {
         ...data
       };
+      console.log("data: ",data)
+      this.testCaseService.saveTestCase(data);
       this.closeModal();
     } else {
       console.error('CreateTestCaseComponent not found');

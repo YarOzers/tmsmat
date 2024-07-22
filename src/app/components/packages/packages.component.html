@@ -112,3 +112,7 @@
   </mat-tree-node>
 </mat-tree>
 <button mat-icon-button (click)="addRootFolder()"><mat-icon>add</mat-icon></button>
+
+<app-fullscreen-modal [isOpen]="isModalOpen" (close)="handleModalClose()">
+  <app-create-test-case></app-create-test-case>
+</app-fullscreen-modal>

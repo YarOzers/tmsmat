@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule} from '@angular/material/tree';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatButtonModule} from '@angular/material/button';
@@ -9,6 +9,10 @@ import {NgIf} from "@angular/common";
 import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {NameDialogComponent} from "../name-dialog/name-dialog.component";
 import {CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
+import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
+import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
+import {TestCaseService} from "../../services/test-case.service";
+import {Subscription} from "rxjs";
 
 export interface FileNode {
   name: string;
@@ -81,9 +85,12 @@ const TREE_DATA: TreeNode[] = [
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css'],
   standalone: true,
-  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem, CdkDropList]
+  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem, CdkDropList, CreateTestCaseComponent, FullscreenModalComponent]
 })
-export class PackagesComponent {
+export class PackagesComponent implements OnInit {
+
+  private eventSubscription: Subscription | undefined;
+
   private _transformer = (node: TreeNode, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -107,8 +114,15 @@ export class PackagesComponent {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-  constructor(public dialog: MatDialog) {
+  constructor(
+    public dialog: MatDialog,
+    private testCaseService: TestCaseService
+  ) {
     this.dataSource.data = TREE_DATA;
+  }
+
+  ngOnInit(): void {
+
   }
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -143,9 +157,10 @@ export class PackagesComponent {
       targetTreeNode.children = [this.getTreeNodeByFlatNode(draggedNode)];
     }
   }
+
   addSuites(node: FlatNode): void {
     const parentNode = this.getTreeNodeByFlatNode(node);
-    const newNode: TreeNode = { name: 'New Suite', type: 'folder', children: [] };
+    const newNode: TreeNode = {name: 'New Suite', type: 'folder', children: []};
     if (parentNode.children) {
       parentNode.children.push(newNode);
     } else {
@@ -153,6 +168,7 @@ export class PackagesComponent {
     }
     this.updateTreeControl();
   }
+
   collapseAllChildren(node: FlatNode): void {
     this.treeControl.dataNodes.forEach(descendant => this.treeControl.collapse(descendant));
   }
@@ -240,7 +256,12 @@ export class PackagesComponent {
   }
 
   addTestCase(node: FlatNode): void {
-    this.openCreateTestCase('Add Test Case').afterClosed().subscribe(testCaseName => {
+    console.log("node: ", node);
+    this.openModal();
+    this.eventSubscription = this.testCaseService.event$.subscribe(() => {
+      this.testCaseService.setFolderName(node.name);
+      const testCaseName = this.testCaseService.getTestCaseName();
+      console.log("333 ", testCaseName)
       if (testCaseName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
@@ -261,8 +282,17 @@ export class PackagesComponent {
           this.treeControl.expand(node);
         }
       }
+      console.log("tredata: ", TREE_DATA);
+
     });
   }
+  openCreateTestCase(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
+    return this.dialog.open(NameDialogComponent, {
+      width: '250px',
+      data: {name: currentName, action}
+    });
+  }
+
 
   addChecklist(node: FlatNode): void {
     this.openDialog('Add Checklist').afterClosed().subscribe(checklistName => {
@@ -319,12 +349,6 @@ export class PackagesComponent {
     });
   }
 
-  openCreateTestCase(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
-    return this.dialog.open(NameDialogComponent, {
-      width: '250px',
-      data: {name: currentName, action}
-    });
-  }
 
   private getTreeNodeByFlatNode(flatNode: FlatNode): TreeNode {
     return <TreeNode>this.findTreeNode(this.dataSource.data, flatNode.name, flatNode.level);
@@ -374,5 +398,17 @@ export class PackagesComponent {
         this.treeControl.expand(node);
       }
     });
+  }
+
+
+  // Modal window
+  isModalOpen = false;
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  handleModalClose() {
+    this.isModalOpen = false;
   }
 }
