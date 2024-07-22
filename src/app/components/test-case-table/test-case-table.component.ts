@@ -72,21 +72,26 @@ import {TestCaseService} from "../../services/test-case.service";
   styleUrl: './test-case-table.component.css'
 })
 export class TestCaseTableComponent implements AfterViewInit, OnInit{
-  TEST_CASE_DATA: TestCase[] = [];
-
-  constructor(private testCaseService: TestCaseService) {
-  }
-  ngOnInit(): void {
-      this.testCaseService.TEST_CASE_DATA$.subscribe(data =>{
-        this.TEST_CASE_DATA = data;
-      })
-  }
+  TEST_CASE_DATA: TestCase[] = [
+  ];
   displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
-  dataSource = new MatTableDataSource(this.TEST_CASE_DATA);
+  dataSource: MatTableDataSource<TestCase>;
   draggingRow: any = null;
+  isModalOpen = false;
 
   @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private testCaseService: TestCaseService) {
+    this.dataSource = new MatTableDataSource(this.TEST_CASE_DATA);
+  }
+
+  ngOnInit(): void {
+    this.testCaseService.TEST_CASE_DATA$.subscribe(data => {
+      this.TEST_CASE_DATA = data;
+      this.dataSource.data = this.TEST_CASE_DATA;
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
@@ -165,9 +170,6 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit{
     const selectedTests = this.dataSource.data.filter(element => element.automationFlag && element.selected);
     selectedTests.forEach(testCase => this.runTest(testCase));
   }
-
-
-  isModalOpen = false;
 
   openModal() {
     this.isModalOpen = true;

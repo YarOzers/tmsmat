@@ -151,8 +151,9 @@ export class TestCaseService {
   }
 
   saveTestCase(testCase: TestCase) {
+    console.log("saved this testCase: ", testCase)
     this.TEST_CASE_DATA.push(testCase);
-    console.log('Test case saved:', testCase);
+    console.log('TEST_CASE_DATA:', this.TEST_CASE_DATA);
 
   }
 

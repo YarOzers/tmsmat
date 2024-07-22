@@ -31,7 +31,7 @@ import {
   BlockToolbar,
   Bold,
   Code,
-  CodeBlock, Editor,
+  CodeBlock,
   Essentials,
   FindAndReplace,
   FontBackgroundColor,
@@ -93,10 +93,11 @@ import {
   Undo
 } from "ckeditor5";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {NgForOf} from "@angular/common";
 import {TestCaseService} from "../../services/test-case.service";
 import {PostConditionItem, PreConditionItem, StepItem, TestCase} from "../../interfaces/test-case.interfase";
+import {MatIcon} from "@angular/material/icon";
 
 
 @Component({
@@ -118,7 +119,10 @@ import {PostConditionItem, PreConditionItem, StepItem, TestCase} from "../../int
     MatSelectModule,
     CKEditorModule,
     MatButton,
-    NgForOf
+    NgForOf,
+    FormsModule,
+    MatIconButton,
+    MatIcon
   ],
   templateUrl: './create-test-case.component.html',
   styleUrl: './create-test-case.component.css'
@@ -127,24 +131,23 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   @ViewChild(TestCaseComponent) testCaseComponent!: TestCaseComponent;
   @ViewChildren('editorElement') editorElements!: QueryList<ElementRef>;
 
-  testCaseId: number = 1;
-  testCaseName: string = '';
-  priority: number = 1;
-  executionTime: string | null = null;
-  automationFlag: boolean | undefined = undefined;
-  type: number | null = 1;
-  stepItemId: number = 1;
-  preConditionItemId: number = 1;
-  postConditionItemId: number = 1;
-  selectedAllSteps: boolean = false;
-  selectedAllPreConditions: boolean = false;
-  selectedAllPostConditions: boolean = false;
+  testCaseId = 0;
+  testCaseName = '';
+  priority = null;
+  executionTime = '';
+  automationFlag = undefined;
+  type = null;
+  stepItemId = 1;
+  preConditionItemId = 1;
+  postConditionItemId = 1;
+  selectedAllSteps = false;
+  selectedAllPreConditions = false;
+  selectedAllPostConditions = false;
 
   config: any = {};
   readonly Editor = BalloonEditor;
   isLayoutReady = false;
 
-  testCaseData: TestCase[] = [];
   stepItems: StepItem[] = [];
   preConditionItems: PreConditionItem[] = [];
   postConditionItems: PostConditionItem[] = [];
@@ -159,7 +162,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     executionTime: this.executionTime,
     automationFlag: this.automationFlag,
     type: this.type,
-    author: '',
+    author: 'Author',
     selected: false,
     loading: false
   }
@@ -167,10 +170,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
 
   getTestCaseData() {
     this.saveTestCase();
-    this.resetFields();
-    this.clearAllArrays();
-    this.testCaseService.addTestCaseInData(this.testCase);
-    return this.testCaseData;
+    return this.testCase;
 
   }
 
@@ -568,8 +568,8 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   }
 
   saveTestCase(): void {
-    const newTestCase: TestCase = {
-      id: this.testCaseData.length + 1, // Автоматически увеличиваем ID
+    this.testCase = {
+      id: this.testCaseId = this.testCaseId + 1, // Автоматически увеличиваем ID
       name: this.testCaseName,
       stepItems: [...this.stepItems],
       preConditionItems: [...this.preConditionItems],
@@ -584,22 +584,23 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
 
     };
     console.log(this.testCase);
-
-    this.testCaseData.push(newTestCase); // Сохраняем тест-кейс в массив
-    console.log(this.testCaseData)
     this.resetFields(); // Сбрасываем все поля
+    this.clearAllArrays();
   }
 
   resetFields(): void {
     this.testCaseName = '';
-    this.priority = 1;
-    this.executionTime = null;
-    this.automationFlag = false;
-    this.type = 1;
+    this.priority = null;
+    this.executionTime = '';
+    this.automationFlag = undefined;
+    this.type = null;
     this.clearAllArrays();
     this.selectedAllSteps = false;
     this.selectedAllPreConditions = false;
     this.selectedAllPostConditions = false;
   }
 
+  showExecutionTime() {
+    console.log(this.executionTime)
+  }
 }

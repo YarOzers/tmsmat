@@ -9,10 +9,10 @@
       <mat-form-field class="select-field">
         <mat-label>Приоритет</mat-label>
         <mat-select [(ngModel)]="priority" disableRipple>
-          <mat-option value="1">Самый высокий</mat-option>
-          <mat-option value="2">Высокий</mat-option>
-          <mat-option value="3">Средний</mat-option>
-          <mat-option value="4">Низкий</mat-option>
+          <mat-option [value]=1>Самый высокий</mat-option>
+          <mat-option [value]=2>Высокий</mat-option>
+          <mat-option [value]=3>Средний</mat-option>
+          <mat-option [value]=4>Низкий</mat-option>
         </mat-select>
       </mat-form-field>
       <div>
@@ -25,19 +25,19 @@
         <mat-form-field class="select-field">
           <mat-label>Признак автоматизации</mat-label>
           <mat-select [(ngModel)]="automationFlag" disableRipple>
-            <mat-option value="1">Ручной</mat-option>
-            <mat-option value="2">Автоматизирован</mat-option>
+            <mat-option [value]=false>Ручной</mat-option>
+            <mat-option [value]=true>Автоматизирован</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="block">
         <mat-form-field class="select-field">
-          <mat-label>Признак автоматизации</mat-label>
+          <mat-label>Тип теста</mat-label>
           <mat-select [(ngModel)]="type" disableRipple>
-            <mat-option value="1">Regression</mat-option>
-            <mat-option value="2">Functional</mat-option>
-            <mat-option value="3">Smoke</mat-option>
-            <mat-option value="4">Integration</mat-option>
+            <mat-option [value]=1>Regression</mat-option>
+            <mat-option [value]=2>Functional</mat-option>
+            <mat-option [value]=3>Smoke</mat-option>
+            <mat-option [value]=4>Integration</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -96,8 +96,8 @@
           </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="end end">
-          <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedPreCondition()">Удалить шаг</button>
-          <button mat-button fxLayoutAlign="start center" (click)="addPreConditionItem()">Добавить шаг</button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="deleteSelectedPreCondition()"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="addPreConditionItem()"><mat-icon>add</mat-icon></button>
         </div>
         <!--  Шаги-->
         <div>Шаги:</div>
@@ -140,8 +140,8 @@
           </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="end end">
-          <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedStep()">Удалить шаг</button>
-          <button mat-button fxLayoutAlign="start center" (click)="addStepItem()">Добавить шаг</button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="deleteSelectedStep()"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="addStepItem()"><mat-icon>add</mat-icon></button>
         </div>
         <!--  Постусловия-->
         <div>Постусловия:</div>
@@ -185,8 +185,8 @@
           </div>
         </div>
         <div fxLayout="row" fxLayoutAlign="end end">
-          <button mat-button fxLayoutAlign="start center" (click)="deleteSelectedPostCondition()">Удалить шаг</button>
-          <button mat-button fxLayoutAlign="start center" (click)="addPostConditionItem()">Добавить шаг</button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="deleteSelectedPostCondition()"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button fxLayoutAlign="start center" (click)="addPostConditionItem()"><mat-icon>add</mat-icon></button>
         </div>
         <!--  -->
       </div>
