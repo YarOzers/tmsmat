@@ -30,8 +30,9 @@ import {FormsModule} from "@angular/forms";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
-import {TestCase} from "../../interfaces/test-case.interfase";
+import {TestCase, TestCaseTablePresentation} from "../../interfaces/test-case.interfase";
 import {TestCaseService} from "../../services/test-case.service";
+import {ExecutionModalComponent} from "../execution-modal/execution-modal.component";
 
 
 @Component({
@@ -66,14 +67,15 @@ import {TestCaseService} from "../../services/test-case.service";
     NgIf,
     MatProgressSpinner,
     CreateTestCaseComponent,
-    FullscreenModalComponent
+    FullscreenModalComponent,
+    ExecutionModalComponent
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
 })
-export class TestCaseTableComponent implements AfterViewInit, OnInit{
-  TEST_CASE_DATA: TestCase[] = [
-  ];
+export class TestCaseTableComponent implements AfterViewInit, OnInit {
+  TEST_CASE_DATA: TestCase[] = [];
+
   displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   dataSource: MatTableDataSource<TestCase>;
@@ -91,6 +93,8 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit{
       this.TEST_CASE_DATA = data;
       this.dataSource.data = this.TEST_CASE_DATA;
     });
+    console.log('Data Source Initialized:', this.dataSource.data); // Отладочный вывод
+    console.log(this.TEST_CASE_DATA);
   }
 
   ngAfterViewInit() {
@@ -173,6 +177,7 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit{
 
   openModal() {
     this.isModalOpen = true;
+    console.log(this.TEST_CASE_DATA);
   }
 
   handleModalClose() {

@@ -1,19 +1,18 @@
-import {AfterViewInit, Component, ContentChild, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ContentChild, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {TestCaseService} from "../../services/test-case.service";
-import {TestCaseComponent} from "../test-case/test-case.component";
 
 @Component({
-  selector: 'app-fullscreen-modal',
+  selector: 'app-execution-modal',
   standalone: true,
-  imports: [
-    NgIf
-  ],
-  templateUrl: './fullscreen-modal.component.html',
-  styleUrl: './fullscreen-modal.component.css'
+    imports: [
+        NgIf
+    ],
+  templateUrl: './execution-modal.component.html',
+  styleUrl: './execution-modal.component.css'
 })
-export class FullscreenModalComponent implements AfterViewInit{
+export class ExecutionModalComponent implements AfterViewInit{
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
   @ContentChild(CreateTestCaseComponent) createTestCaseComponent!: CreateTestCaseComponent;
@@ -21,7 +20,7 @@ export class FullscreenModalComponent implements AfterViewInit{
 
   ngAfterViewInit(): void {
 
-    }
+  }
 
   testCase: any;
 

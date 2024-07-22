@@ -18,7 +18,7 @@
           <mat-checkbox (change)="toggleSelectAll($event)" [checked]="isAllSelected()" [indeterminate]="isIndeterminate()"></mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let element">
-          <mat-checkbox [(ngModel)]="element.selected" (ngModelChange)="onCheckboxChange()" [disabled]="!element.auto"></mat-checkbox>
+          <mat-checkbox [(ngModel)]="element.selected" (ngModelChange)="onCheckboxChange()" [disabled]="!element.automationFlag"></mat-checkbox>
         </td>
       </ng-container>
 
@@ -58,3 +58,7 @@
 <app-fullscreen-modal [isOpen]="isModalOpen" (close)="handleModalClose()">
   <app-create-test-case></app-create-test-case>
 </app-fullscreen-modal>
+
+<app-execution-modal [isOpen]="isModalOpen" (close)="handleModalClose()">
+  <app-create-test-case></app-create-test-case>
+</app-execution-modal>

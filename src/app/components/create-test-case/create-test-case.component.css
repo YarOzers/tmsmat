@@ -21,7 +21,7 @@
 }
 
 .left-column {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   padding: 10px;
   overflow-y: auto; /* прокрутка появляется только при переполнении */
 }
@@ -291,6 +291,11 @@ input[type="time"]:focus {
 .ck-color-focus-border {
   border: none;
 }
+
+mat-expansion-panel{
+  margin: 1rem 0 1rem 0;
+}
+
 
 
 
