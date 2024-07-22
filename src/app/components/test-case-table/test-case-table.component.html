@@ -41,7 +41,7 @@
 
       <!-- Строки таблицы -->
       <tr mat-header-row *matHeaderRowDef="headerColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsWithSelectAndRun" cdkDrag (cdkDragStarted)="onDragStarted(row)" (cdkDragEnded)="onDragEnded()"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsWithSelectAndRun" cdkDrag (cdkDragStarted)="onDragStarted(row)" (cdkDragEnded)="onDragEnded()" (click)="showObjectFromRow(row)"></tr>
     </table>
   </div>
 </div>
@@ -60,5 +60,5 @@
 </app-fullscreen-modal>
 
 <app-execution-modal [isOpen]="isModalOpen" (close)="handleModalClose()">
-  <app-create-test-case></app-create-test-case>
+  <app-test-case-execution></app-test-case-execution>
 </app-execution-modal>

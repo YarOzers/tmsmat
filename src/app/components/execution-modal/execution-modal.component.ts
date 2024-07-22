@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ContentChild, EventEmitter, Input, Output} fro
 import {NgIf} from "@angular/common";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {TestCaseService} from "../../services/test-case.service";
+import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execution.component";
 
 @Component({
   selector: 'app-execution-modal',
@@ -15,7 +16,7 @@ import {TestCaseService} from "../../services/test-case.service";
 export class ExecutionModalComponent implements AfterViewInit{
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
-  @ContentChild(CreateTestCaseComponent) createTestCaseComponent!: CreateTestCaseComponent;
+  @ContentChild(TestCaseExecutionComponent) testCaseExecutionComponent!: TestCaseExecutionComponent;
   constructor(private testCaseService: TestCaseService) {}
 
   ngAfterViewInit(): void {
@@ -26,7 +27,7 @@ export class ExecutionModalComponent implements AfterViewInit{
 
   ngAfterContentInit() {
     // Проверка, что ContentChild корректно инициализирован
-    if (!this.createTestCaseComponent) {
+    if (!this.testCaseExecutionComponent) {
       console.error('CreateTestCaseComponent not found');
     }
   }
@@ -37,8 +38,8 @@ export class ExecutionModalComponent implements AfterViewInit{
   }
 
   saveTestCase() {
-    if (this.createTestCaseComponent) {
-      const data = this.createTestCaseComponent.getTestCaseData();
+    if (this.testCaseExecutionComponent) {
+      const data = this.testCaseExecutionComponent.getTestCaseData();
       this.testCase = {
         ...data
       };

@@ -33,6 +33,7 @@ import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.com
 import {TestCase, TestCaseTablePresentation} from "../../interfaces/test-case.interfase";
 import {TestCaseService} from "../../services/test-case.service";
 import {ExecutionModalComponent} from "../execution-modal/execution-modal.component";
+import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execution.component";
 
 
 @Component({
@@ -68,7 +69,8 @@ import {ExecutionModalComponent} from "../execution-modal/execution-modal.compon
     MatProgressSpinner,
     CreateTestCaseComponent,
     FullscreenModalComponent,
-    ExecutionModalComponent
+    ExecutionModalComponent,
+    TestCaseExecutionComponent
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
@@ -186,5 +188,14 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
 
   showData() {
     console.log(this.TEST_CASE_DATA);
+  }
+
+  showObjectFromRow(row: any) {
+    const foundObject = this.TEST_CASE_DATA.find(item => item.id === row.id);
+    if (foundObject) {
+      console.log(foundObject);
+    } else {
+      console.log('Object not found');
+    }
   }
 }
