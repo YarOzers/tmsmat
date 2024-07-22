@@ -19,8 +19,11 @@ export interface TestCase {
   postConditionItems: PostConditionItem[] | null;
   priority: number | null;
   executionTime: string | null;
-  automationFlag: number | null;
+  automationFlag: boolean | undefined;
   type: number | null;
+  author: string | null;
+  selected: boolean | null;
+  loading: boolean | null
 }
 
 export interface StepItem {

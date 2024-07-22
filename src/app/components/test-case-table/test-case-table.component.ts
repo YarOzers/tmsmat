@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForOf, NgIf, TitleCasePipe} from "@angular/common";
 import {
   MatCell,
@@ -30,27 +30,9 @@ import {FormsModule} from "@angular/forms";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
+import {TestCase} from "../../interfaces/test-case.interfase";
+import {TestCaseService} from "../../services/test-case.service";
 
-interface TestCaseTablePresentation {
-  id: number;
-  name: string;
-  priority: string;
-  author: string;
-  type: string;
-  auto: boolean;
-  selected?: boolean;
-  loading?: boolean; // Добавлено свойство для отслеживания состояния загрузки
-}
-
-const ELEMENT_DATA: TestCaseTablePresentation[] = [
-  { id: 1, name: 'Test Case 1', priority: 'High', author: 'Author 1', type: 'Functional', auto: true },
-  { id: 2, name: 'Test Case 2', priority: 'Medium', author: 'Author 2', type: 'Regression', auto: true  },
-  { id: 3, name: 'Test Case 3', priority: 'Medium', author: 'Author 3', type: 'Regression', auto: false  },
-  { id: 4, name: 'Test Case 4', priority: 'Medium', author: 'Author 4', type: 'Regression', auto: true  },
-  { id: 5, name: 'Test Case 5', priority: 'Medium', author: 'Author 5', type: 'Regression', auto: false  },
-  { id: 6, name: 'Test Case 6', priority: 'Medium', author: 'Author 6', type: 'Regression', auto: true  },
-  // ...добавьте другие тестовые данные
-];
 
 @Component({
   selector: 'app-test-case-table',
@@ -89,10 +71,19 @@ const ELEMENT_DATA: TestCaseTablePresentation[] = [
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
 })
-export class TestCaseTableComponent implements AfterViewInit{
-  displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'auto'];
-  allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'auto'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+export class TestCaseTableComponent implements AfterViewInit, OnInit{
+  TEST_CASE_DATA: TestCase[] = [];
+
+  constructor(private testCaseService: TestCaseService) {
+  }
+  ngOnInit(): void {
+      this.testCaseService.TEST_CASE_DATA$.subscribe(data =>{
+        this.TEST_CASE_DATA = data;
+      })
+  }
+  displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
+  allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
+  dataSource = new MatTableDataSource(this.TEST_CASE_DATA);
   draggingRow: any = null;
 
   @ViewChild(MatSort) sort!: MatSort;
@@ -118,7 +109,7 @@ export class TestCaseTableComponent implements AfterViewInit{
     }
   }
 
-  dropTable(event: CdkDragDrop<TestCaseTablePresentation[]>) {
+  dropTable(event: CdkDragDrop<TestCase[]>) {
     moveItemInArray(this.dataSource.data, event.previousIndex, event.currentIndex);
     this.dataSource.data = [...this.dataSource.data];
   }
@@ -136,17 +127,17 @@ export class TestCaseTableComponent implements AfterViewInit{
   }
 
   isAllSelected(): boolean {
-    return this.dataSource.data.every(element => element.auto && element.selected);
+    return this.dataSource.data.every(element => element.automationFlag && element.selected);
   }
 
   isIndeterminate(): boolean {
-    return this.dataSource.data.some(element => element.auto && element.selected) && !this.isAllSelected();
+    return this.dataSource.data.some(element => element.automationFlag && element.selected) && !this.isAllSelected();
   }
 
   toggleSelectAll(event: any) {
     const isChecked = event.checked;
     this.dataSource.data.forEach(element => {
-      if (element.auto) {
+      if (element.automationFlag) {
         element.selected = isChecked;
       }
     });
@@ -158,7 +149,7 @@ export class TestCaseTableComponent implements AfterViewInit{
     this.dataSource.data = [...this.dataSource.data];
   }
 
-  runTest(testCase: TestCaseTablePresentation) {
+  runTest(testCase: TestCase) {
     console.log(`Running test: ${testCase.name}`);
     testCase.loading = true; // Включаем лоадер
 
@@ -171,7 +162,7 @@ export class TestCaseTableComponent implements AfterViewInit{
   }
 
   runSelectedTests() {
-    const selectedTests = this.dataSource.data.filter(element => element.auto && element.selected);
+    const selectedTests = this.dataSource.data.filter(element => element.automationFlag && element.selected);
     selectedTests.forEach(testCase => this.runTest(testCase));
   }
 
@@ -184,5 +175,9 @@ export class TestCaseTableComponent implements AfterViewInit{
 
   handleModalClose() {
     this.isModalOpen = false;
+  }
+
+  showData() {
+    console.log(this.TEST_CASE_DATA);
   }
 }

@@ -131,7 +131,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   testCaseName: string = '';
   priority: number = 1;
   executionTime: string | null = null;
-  automationFlag: number | null = null;
+  automationFlag: boolean | undefined = undefined;
   type: number | null = 1;
   stepItemId: number = 1;
   preConditionItemId: number = 1;
@@ -158,7 +158,10 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     priority: this.priority,
     executionTime: this.executionTime,
     automationFlag: this.automationFlag,
-    type: this.type
+    type: this.type,
+    author: '',
+    selected: false,
+    loading: false
   }
 
 
@@ -166,6 +169,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     this.saveTestCase();
     this.resetFields();
     this.clearAllArrays();
+    this.testCaseService.addTestCaseInData(this.testCase);
     return this.testCaseData;
 
   }
@@ -177,7 +181,6 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-;
   }
 
   public ngAfterViewInit(): void {
@@ -574,7 +577,11 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
       priority: this.priority,
       executionTime: this.executionTime,
       automationFlag: this.automationFlag,
-      type: this.type
+      type: this.type,
+      author: 'Author',
+      selected: false,
+      loading: false
+
     };
     console.log(this.testCase);
 
@@ -587,7 +594,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     this.testCaseName = '';
     this.priority = 1;
     this.executionTime = null;
-    this.automationFlag = null;
+    this.automationFlag = false;
     this.type = 1;
     this.clearAllArrays();
     this.selectedAllSteps = false;

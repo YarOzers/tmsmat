@@ -1,21 +1,13 @@
 import {Injectable} from '@angular/core';
 import {PostConditionItem, PreConditionItem, StepItem} from '../components/test-case/test-case.component';
+import {BehaviorSubject} from "rxjs";
+import {TestCase} from "../interfaces/test-case.interfase";
 
 
-const TEST_CASE_DATA: TestCase[] = [];
+// const TEST_CASE_DATA: TestCase[] = [];
 
-interface TestCase {
-  id: number;
-  name: string;
-  stepItems: StepItem[] | null;
-  preConditionItems: PreConditionItem[] | null;
-  postConditionItems: PostConditionItem[] | null;
-  priority: number | null;
-  executionTime: string | null;
-  automationFlag: number | null;
-}
 
-interface TestCaseTablePresentation{
+interface TestCaseTablePresentation {
   id: number;
   name: string;
   priority: string;
@@ -27,14 +19,11 @@ interface TestCaseTablePresentation{
   providedIn: 'root'
 })
 export class TestCaseService {
-  get testCaseAutomationFlag(): any {
-    return this._testCaseAutomationFlag;
-  }
 
-  set testCaseAutomationFlag(value: any) {
-    this._testCaseAutomationFlag = value;
-  }
-  private testCaseData: TestCase[] = [];
+  private TEST_CASE_DATA: TestCase[] = [];
+  private dataSubject = new BehaviorSubject(this.TEST_CASE_DATA);
+
+  TEST_CASE_DATA$ = this.dataSubject.asObservable();
 
   private testCaseId = 0;
   private testCaseName = '';
@@ -43,7 +32,11 @@ export class TestCaseService {
   private testCasePostconditionItemsArray: PostConditionItem[] = [];
   private testCasePriority = 1;
   private testCaseTime = '';
-  private _testCaseAutomationFlag = null;
+  private testCaseAutomationFlag = true;
+  private testCaseType = 1;
+  private testCaseAuthor = 'Some author';
+  private testCaseSelected = false;
+  private testCaseLoading = false;
 
   private testCase: TestCase = {
     id: this.testCaseId,
@@ -53,7 +46,11 @@ export class TestCaseService {
     postConditionItems: this.testCasePostconditionItemsArray,
     priority: this.testCasePriority,
     executionTime: this.testCaseTime,
-    automationFlag: this._testCaseAutomationFlag
+    automationFlag: this.testCaseAutomationFlag,
+    type: this.testCaseType,
+    author: this.testCaseAuthor,
+    selected: this.testCaseSelected,
+    loading: this.testCaseLoading
   }
 
 
@@ -154,32 +151,40 @@ export class TestCaseService {
   }
 
   saveTestCase(testCase: TestCase) {
-    this.testCaseData.push(testCase);
+    this.TEST_CASE_DATA.push(testCase);
     console.log('Test case saved:', testCase);
 
   }
+
   getTestCases(): TestCase[] {
-    return this.testCaseData;
+    return this.TEST_CASE_DATA;
   }
-  setTestCaseId(id: number){
+
+  setTestCaseId(id: number) {
     this.testCaseId = id;
   }
 
-  setTestCaseName(name: string){
+  setTestCaseName(name: string) {
     this.testCaseName = name;
   }
 
-  setTestCasePriority(priority: number){
+  setTestCasePriority(priority: number) {
     this.testCasePriority = priority;
   }
 
-  setTestCaseTime(time: string){
+  setTestCaseTime(time: string) {
     this.testCaseTime = time;
   }
 
 
+  getTestCaseData() {
+    return this.TEST_CASE_DATA;
+  }
 
-  getTestCaseData(){
-    return TEST_CASE_DATA;
+  addTestCaseInData(testCase: TestCase) {
+    this.TEST_CASE_DATA.push(testCase);
+    this.dataSubject.next(this.TEST_CASE_DATA)
+    console.log(testCase);
+    console.log("TestCase was added into array TEST_CASE_DATA :" + this.TEST_CASE_DATA)
   }
 }
