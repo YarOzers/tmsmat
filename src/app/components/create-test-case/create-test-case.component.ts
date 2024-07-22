@@ -175,7 +175,8 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     type: this.type,
     author: 'Author',
     selected: false,
-    loading: false
+    loading: false,
+    folder: null
   }
 
 
@@ -596,7 +597,8 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
       type: this.type,
       author: 'Author',
       selected: false,
-      loading: false
+      loading: false,
+      folder: null
 
     };
     console.log(this.testCase);

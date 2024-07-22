@@ -23,7 +23,8 @@ export interface TestCase {
   type: number | null;
   author: string | null;
   selected: boolean | null;
-  loading: boolean | null
+  loading: boolean | null;
+  folder: string | null;
 }
 
 export interface StepItem {

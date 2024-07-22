@@ -55,7 +55,8 @@ export class TestCaseService {
       type: 1,
       author: "test_author_1",
       selected: false,
-      loading: false
+      loading: false,
+      folder: null
     },
     {
       id: 2,
@@ -95,7 +96,8 @@ export class TestCaseService {
       type: 2,
       author: "test_author_2",
       selected: false,
-      loading: false
+      loading: false,
+      folder: null
     },
     {
       id: 3,
@@ -142,7 +144,8 @@ export class TestCaseService {
       type: 1,
       author: "test_author_3",
       selected: false,
-      loading: false
+      loading: false,
+      folder: null
     }
   ];
   private dataSubject = new BehaviorSubject(this.TEST_CASE_DATA);
@@ -161,6 +164,7 @@ export class TestCaseService {
   private testCaseAuthor = 'Some author';
   private testCaseSelected = false;
   private testCaseLoading = false;
+  private testCaseFolder = '';
 
   private testCase: TestCase = {
     id: this.testCaseId,
@@ -174,9 +178,9 @@ export class TestCaseService {
     type: this.testCaseType,
     author: this.testCaseAuthor,
     selected: this.testCaseSelected,
-    loading: this.testCaseLoading
+    loading: this.testCaseLoading,
+    folder: this.testCaseFolder
   }
-
 
   constructor() {
   }
@@ -189,9 +193,6 @@ export class TestCaseService {
     this.testCaseStepItemsArray = testCases;
   }
 
-  addToTestCaseStepItemsArray(item: any): void {
-    this.testCaseStepItemsArray.push(item);
-  }
 
   clearTestCaseStepItemsArray(): void {
     this.testCaseStepItemsArray = [];
@@ -205,9 +206,6 @@ export class TestCaseService {
     this.testCasePreconditionItemsArray = testCases;
   }
 
-  addToTestCasePreconditionItemsArray(item: any): void {
-    this.testCasePreconditionItemsArray.push(item);
-  }
 
   clearTestCasePreconditionItemsArray(): void {
     this.testCasePreconditionItemsArray = [];
@@ -221,9 +219,6 @@ export class TestCaseService {
     this.testCasePostconditionItemsArray = testCases;
   }
 
-  addToTestCasePostConditionArray(item: any): void {
-    this.testCasePostconditionItemsArray.push(item);
-  }
 
   clearTestCasePostConditionItemsArray(): void {
     this.testCasePostconditionItemsArray = [];
@@ -275,31 +270,6 @@ export class TestCaseService {
   }
 
 
-  getTestCases(): TestCase[] {
-    return this.TEST_CASE_DATA;
-  }
-
-  setTestCaseId(id: number) {
-    this.testCaseId = id;
-  }
-
-  setTestCaseName(name: string) {
-    this.testCaseName = name;
-  }
-
-  setTestCasePriority(priority: number) {
-    this.testCasePriority = priority;
-  }
-
-  setTestCaseTime(time: string) {
-    this.testCaseTime = time;
-  }
-
-
-  getTestCaseData() {
-    return this.TEST_CASE_DATA;
-  }
-
   addTestCaseInData(testCase: TestCase) {
     this.TEST_CASE_DATA.push(testCase);
     this.dataSubject.next(this.TEST_CASE_DATA)
@@ -308,6 +278,10 @@ export class TestCaseService {
   }
 
   getTestCaseId() {
-return this.TEST_CASE_DATA.length;
+    return this.TEST_CASE_DATA.length;
+  }
+
+  selectFolder(folderName: string){
+    this.testCaseFolder = folderName;
   }
 }

@@ -16,5 +16,15 @@ import {TestCaseTableComponent} from "./components/test-case-table/test-case-tab
 })
 export class AppComponent {
   title = 'tmsmat';
+  leftColumnSize = 20;
+  rightColumnSize = 80;
+
+  onPointerDown(event: PointerEvent) {
+    if (event.pointerType === 'touch') {
+      console.log('Touch event detected');
+    } else {
+      console.log('Non-touch event detected');
+    }
+  }
 
 }

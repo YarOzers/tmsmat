@@ -199,6 +199,8 @@ export class PackagesComponent {
         this.updateTreeControl();
       }
     });
+
+
   }
 
   deleteFolder(node: FlatNode): void {
