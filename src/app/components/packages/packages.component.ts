@@ -27,7 +27,6 @@ interface FlatNode {
   level: number;
 }
 
-
 const TREE_DATA: TreeNode[] = []
 
 @Component({
@@ -321,21 +320,31 @@ export class PackagesComponent implements OnInit {
     return null;
   }
 
+
   private updateTreeControl(): void {
+    const expandedNodeNames = this.saveExpandedState();
+    this.dataSource.data = [...this.dataSource.data]; // Trigger data update
+    this.restoreExpandedState(expandedNodeNames);
+  }
+
+  // Отслеживание состояния узлов
+  private saveExpandedState(): Set<string> {
     const expandedNodeNames = new Set<string>();
     this.treeControl.dataNodes.forEach(node => {
       if (this.treeControl.isExpanded(node)) {
         expandedNodeNames.add(node.name);
       }
     });
-    this.dataSource.data = [...this.dataSource.data]; // Trigger data update
+    return expandedNodeNames;
+  }
+
+  private restoreExpandedState(expandedNodeNames: Set<string>): void {
     this.treeControl.dataNodes.forEach(node => {
       if (expandedNodeNames.has(node.name)) {
         this.treeControl.expand(node);
       }
     });
   }
-
 
 
 

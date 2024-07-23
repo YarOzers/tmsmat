@@ -60,95 +60,6 @@ export class TestCaseService {
       selected: false,
       loading: false,
       folder: "root"
-    },
-    {
-      id:102,
-      name: "Registration Test",
-      stepItems: [
-        {
-          selected: false,
-          id: 104,
-          action: "Open the registration page",
-          expectedResult: "Registration page is displayed"
-        },
-        {
-          selected: false,
-          id: 105,
-          action: "Enter registration details",
-          expectedResult: "User is able to enter registration details"
-        },
-        {
-          selected: false,
-          id: 106,
-          action: "Click register button",
-          expectedResult: "User account is created and user is redirected to the login page"
-        }
-      ],
-      preConditionItems: null,
-      postConditionItems: [
-        {
-          selected: false,
-          id: 302,
-          action: "Verify email",
-          expectedResult: "User receives verification email"
-        }
-      ],
-      priority: 2,
-      executionTime: "10:22",
-      automationFlag: false,
-      type: 2,
-      author: "test_author_2",
-      selected: false,
-      loading: false,
-      folder: "root"
-    },
-    {
-      id: 103,
-      name: "Password Reset Test",
-      stepItems: [
-        {
-          selected: false,
-          id: 107,
-          action: "Open the forgot password page",
-          expectedResult: "Forgot password page is displayed"
-        },
-        {
-          selected: false,
-          id: 108,
-          action: "Enter registered email",
-          expectedResult: "User is able to enter their email"
-        },
-        {
-          selected: false,
-          id: 109,
-          action: "Click reset password button",
-          expectedResult: "User receives a password reset email"
-        }
-      ],
-      preConditionItems: [
-        {
-          selected: false,
-          id: 202,
-          action: "User is registered",
-          expectedResult: "User account exists"
-        }
-      ],
-      postConditionItems: [
-        {
-          selected: false,
-          id: 303,
-          action: "Verify password reset",
-          expectedResult: "User can log in with the new password"
-        }
-      ],
-      priority: 1,
-      executionTime: "12:44",
-      automationFlag: true,
-      type: 1,
-      author: "test_author_3",
-      selected: false,
-      loading: false,
-      folder: "root"
     }
   ];
   private dataSubject = new BehaviorSubject(this.TEST_CASE_DATA);
@@ -301,4 +212,17 @@ export class TestCaseService {
     console.log("testCase in Service: ", this.testCase);
     this.eventSource.next();
   }
+
+  changeTestCaseFolder(folderName: string, testCaseId: number){
+    const testCase = this.TEST_CASE_DATA.find(tc => tc.id === testCaseId);
+    if (testCase) {
+      testCase.folder = folderName;
+      this.dataSubject.next(this.TEST_CASE_DATA);
+      console.log(`Folder of test case with id ${testCaseId} changed to ${folderName}`);
+    } else {
+      console.log(`Test case with id ${testCaseId} not found`);
+    }
+  }
+
+
 }
