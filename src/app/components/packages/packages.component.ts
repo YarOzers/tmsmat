@@ -13,11 +13,13 @@ import {CreateTestCaseComponent} from "../create-test-case/create-test-case.comp
 import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
 import {TestCaseService} from "../../services/test-case.service";
 import {Subscription} from "rxjs";
+import {CheckList, TestCase} from "../../interfaces/test-case.interfase";
 
 interface TreeNode {
   name: string;
   type: 'folder' | 'test-case' | 'check-list';
   children?: TreeNode[];
+  data?: TestCase | CheckList
 }
 
 interface FlatNode {
@@ -25,6 +27,7 @@ interface FlatNode {
   name: string;
   type: 'folder' | 'test-case' | 'check-list';
   level: number;
+  data?: TestCase | CheckList
 }
 
 const TREE_DATA: TreeNode[] = []
@@ -209,11 +212,13 @@ export class PackagesComponent implements OnInit {
     this.openModal();
     this.testCaseService.setFolderNameInTestCase(node.name);
     this.eventSubscription = this.testCaseService.event$.subscribe(() => {
-      const testCaseName = this.testCaseService.getTestCaseName();
+      // const testCaseName = this.testCaseService.getTestCaseName();
+      const testCase = this.testCaseService.getTestCase();
+      const testCaseName = testCase.name;
       if (testCaseName) {
       const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newTestCase: TreeNode = {name: testCaseName, type: 'test-case'};
+          const newTestCase: TreeNode = {name: testCaseName, type: 'test-case',data: testCase};
           const parentTreeNode = this.getTreeNodeByFlatNode(node);
           if (parentTreeNode.children) {
             parentTreeNode.children.push(newTestCase);
@@ -225,6 +230,7 @@ export class PackagesComponent implements OnInit {
         }
       }
     });
+    console.log("tree_data: ",TREE_DATA);
   }
   openCreateTestCase(title: string): MatDialogRef<CreateTestCaseComponent> {
     return this.dialog.open(CreateTestCaseComponent, {

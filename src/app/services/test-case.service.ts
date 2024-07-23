@@ -225,4 +225,7 @@ export class TestCaseService {
   }
 
 
+  getTestCase() {
+    return this.testCase;
+  }
 }
