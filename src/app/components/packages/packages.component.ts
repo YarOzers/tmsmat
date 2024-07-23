@@ -15,14 +15,14 @@ import {TestCaseService} from "../../services/test-case.service";
 import {Subscription} from "rxjs";
 import {CheckList, TestCase} from "../../interfaces/test-case.interfase";
 
-interface TreeNode {
+export interface TreeNode {
   name: string;
   type: 'folder' | 'test-case' | 'check-list';
   children?: TreeNode[];
   data?: TestCase | CheckList
 }
 
-interface FlatNode {
+export interface FlatNode {
   expandable: boolean;
   name: string;
   type: 'folder' | 'test-case' | 'check-list';
