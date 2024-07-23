@@ -3,19 +3,19 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="tree-node" cdkDrag>
     <button mat-icon-button disabled></button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
-      {{ node.type === 'test-case' ? 'description' : 'folder' }}
+      {{ node.type === 'test-case' ? 'description' : (node.type === 'check-list' ? 'check_box' : 'folder') }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
     <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <ng-container *ngIf="node.type === 'test-case'; else folderMenu">
-        <button mat-menu-item (click)="editFile(node)">
+      <ng-container *ngIf="node.type === 'test-case' || node.type === 'check-list'; else folderMenu">
+        <button mat-menu-item (click)="editNode(node)">
           <mat-icon>edit</mat-icon>
           <span>Редактировать</span>
         </button>
-        <button mat-menu-item (click)="deleteFile(node)">
+        <button mat-menu-item (click)="deleteNode(node)">
           <mat-icon>delete</mat-icon>
           <span>Удалить</span>
         </button>
@@ -61,19 +61,19 @@
       </mat-icon>
     </button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
-      {{ node.type === 'test-case' ? 'description' : 'folder' }}
+      {{ node.type === 'test-case' ? 'description' : (node.type === 'check-list' ? 'check_box' : 'folder') }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
     <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <ng-container *ngIf="node.type === 'test-case'; else folderMenu">
-        <button mat-menu-item (click)="editFile(node)">
+      <ng-container *ngIf="node.type === 'test-case' || node.type === 'check-list'; else folderMenu">
+        <button mat-menu-item (click)="editNode(node)">
           <mat-icon>edit</mat-icon>
           <span>Редактировать</span>
         </button>
-        <button mat-menu-item (click)="deleteFile(node)">
+        <button mat-menu-item (click)="deleteNode(node)">
           <mat-icon>delete</mat-icon>
           <span>Удалить</span>
         </button>

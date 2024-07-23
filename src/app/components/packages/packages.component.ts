@@ -14,71 +14,21 @@ import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.com
 import {TestCaseService} from "../../services/test-case.service";
 import {Subscription} from "rxjs";
 
-export interface FileNode {
-  name: string;
-  type: string;
-  children?: FileNode[];
-}
-
-export interface FlatNode {
-  expandable: boolean;
-  name: string;
-  type: string;
-  level: number;
-}
-
 interface TreeNode {
   name: string;
-  type: string;
+  type: 'folder' | 'test-case' | 'check-list';
   children?: TreeNode[];
 }
 
-const TREE_DATA: TreeNode[] = [
-  {
-    name: 'components',
-    type: 'folder',
-    children: [
-      {
-        name: 'src',
-        type: 'folder',
-        children: [
-          {
-            name: 'cdk',
-            type: 'folder',
-            children: [
-              {name: 'package.json', type: 'test-case'},
-              {name: 'BUILD.bazel', type: 'test-case'},
-            ]
-          },
-          {name: 'material', type: 'folder'}
-        ]
-      }
-    ]
-  },
-  {
-    name: 'angular',
-    type: 'folder',
-    children: [
-      {
-        name: 'packages',
-        type: 'folder',
-        children: [
-          {name: '.travis.yml', type: 'test-case'},
-          {name: 'firebase.json', type: 'test-case'}
-        ]
-      },
-      {name: 'package.json', type: 'test-case'}
-    ]
-  },
-  {
-    name: 'angularjs',
-    type: 'folder',
-    children: [
-      {name: 'gulpfile.js', type: 'test-case'},
-      {name: 'README.md', type: 'test-case'}
-    ]
-  }
-];
+interface FlatNode {
+  expandable: boolean;
+  name: string;
+  type: 'folder' | 'test-case' | 'check-list';
+  level: number;
+}
+
+
+const TREE_DATA: TreeNode[] = []
 
 @Component({
   selector: 'app-packages',
@@ -256,22 +206,11 @@ export class PackagesComponent implements OnInit {
   }
 
   addTestCase(node: FlatNode): void {
-    console.log("node: ", node);
-    this.openModal();
-    this.eventSubscription = this.testCaseService.event$.subscribe(() => {
-      this.testCaseService.setFolderName(node.name);
-      const testCaseName = this.testCaseService.getTestCaseName();
-      console.log("333 ", testCaseName)
+    this.openCreateTestCase('Add Test Case').afterClosed().subscribe(testCaseName => {
       if (testCaseName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
           const newTestCase: TreeNode = {name: testCaseName, type: 'test-case'};
-          const newTestCaseFlatNode: FlatNode = {
-            name: testCaseName,
-            type: 'file',
-            level: node.level + 1,
-            expandable: false
-          };
           const parentTreeNode = this.getTreeNodeByFlatNode(node);
           if (parentTreeNode.children) {
             parentTreeNode.children.push(newTestCase);
@@ -282,30 +221,22 @@ export class PackagesComponent implements OnInit {
           this.treeControl.expand(node);
         }
       }
-      console.log("tredata: ", TREE_DATA);
-
     });
   }
-  openCreateTestCase(action: string, currentName: string = ''): MatDialogRef<NameDialogComponent, string> {
-    return this.dialog.open(NameDialogComponent, {
-      width: '250px',
-      data: {name: currentName, action}
+  openCreateTestCase(title: string): MatDialogRef<CreateTestCaseComponent> {
+    return this.dialog.open(CreateTestCaseComponent, {
+      width: '400px',
+      data: {title}
     });
   }
 
 
   addChecklist(node: FlatNode): void {
-    this.openDialog('Add Checklist').afterClosed().subscribe(checklistName => {
+    this.openCreateTestCase('Add Checklist').afterClosed().subscribe(checklistName => {
       if (checklistName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newChecklist: TreeNode = {name: checklistName, type: 'test-case'};
-          const newChecklistFlatNode: FlatNode = {
-            name: checklistName,
-            type: 'test-case',
-            level: node.level + 1,
-            expandable: false
-          };
+          const newChecklist: TreeNode = {name: checklistName, type: 'check-list'};
           const parentTreeNode = this.getTreeNodeByFlatNode(node);
           if (parentTreeNode.children) {
             parentTreeNode.children.push(newChecklist);
@@ -319,26 +250,27 @@ export class PackagesComponent implements OnInit {
     });
   }
 
-  editFile(node: FlatNode): void {
-    this.openDialog('Edit File Name', node.name).afterClosed().subscribe(fileName => {
-      if (fileName) {
+  editNode(node: FlatNode): void {
+    this.openDialog('Edit Name', node.name).afterClosed().subscribe(name => {
+      if (name) {
         const treeNode = this.getTreeNodeByFlatNode(node);
-        treeNode.name = fileName;
-        node.name = fileName;
-        this.updateTreeControl();
+        if (treeNode) {
+          treeNode.name = name;
+          this.updateTreeControl();
+        }
       }
     });
   }
 
-  deleteFile(node: FlatNode): void {
-    const nodeIndex = this.treeControl.dataNodes.indexOf(node);
-    if (nodeIndex !== -1) {
-      this.treeControl.dataNodes.splice(nodeIndex, 1);
-      const parentTreeNode = this.getParentTreeNodeByFlatNode(node);
-      if (parentTreeNode && parentTreeNode.children) {
-        parentTreeNode.children = parentTreeNode.children.filter(child => child.name !== node.name);
+
+  deleteNode(node: FlatNode): void {
+    const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
+    if (parentNodeIndex !== -1) {
+      const parentTreeNode = this.getTreeNodeByFlatNode(node);
+      if (parentTreeNode) {
+        parentTreeNode.children = parentTreeNode.children?.filter(child => child.name !== node.name) || [];
+        this.updateTreeControl();
       }
-      this.updateTreeControl();
     }
   }
 
@@ -399,6 +331,8 @@ export class PackagesComponent implements OnInit {
       }
     });
   }
+
+
 
 
   // Modal window
