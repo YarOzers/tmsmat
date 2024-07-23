@@ -146,7 +146,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   testCaseName = '';
   priority = null;
   executionTime = '';
-  automationFlag = undefined;
+  automationFlag = false;
   type = null;
   stepItemId = 1;
   preConditionItemId = 1;
@@ -615,7 +615,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     this.testCaseName = '';
     this.priority = null;
     this.executionTime = '';
-    this.automationFlag = undefined;
+    this.automationFlag = false;
     this.type = null;
     this.clearAllArrays();
     this.selectedAllSteps = false;

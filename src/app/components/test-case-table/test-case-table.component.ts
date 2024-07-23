@@ -30,10 +30,45 @@ import {FormsModule} from "@angular/forms";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
-import {TestCase, TestCaseTablePresentation} from "../../interfaces/test-case.interfase";
+import {
+  CheckList,
+  TestCasePostCondition,
+  TestCasePreCondition,
+  TestCaseStep
+} from "../../interfaces/test-case.interfase";
 import {TestCaseService} from "../../services/test-case.service";
 import {ExecutionModalComponent} from "../execution-modal/execution-modal.component";
 import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execution.component";
+
+export interface TestCase {
+  id: number;
+  name: string;
+  stepItems: TestCaseStep[] | null;
+  preConditionItems: TestCasePreCondition[] | null;
+  postConditionItems: TestCasePostCondition[] | null;
+  priority: number | null;
+  executionTime: string | null;
+  automationFlag: boolean | null;
+  type: number | null;
+  author: string | null;
+  selected: boolean | null;
+  loading: boolean | null;
+  folder: string | null;
+}
+export interface TreeNode {
+  name: string;
+  type: 'folder' | 'test-case' | 'check-list';
+  children?: TreeNode[];
+  data?: TestCase | CheckList
+}
+
+export interface FlatNode {
+  expandable: boolean;
+  name: string;
+  type: 'folder' | 'test-case' | 'check-list';
+  level: number;
+  data?: TestCase | CheckList
+}
 
 
 @Component({
@@ -76,36 +111,109 @@ import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execu
   styleUrl: './test-case-table.component.css'
 })
 export class TestCaseTableComponent implements AfterViewInit, OnInit {
-  TEST_CASE_DATA: TestCase[] = [];
+  TREE_DATA: TreeNode[] = [
+    {
+      "name": "65462562",
+      "type": "folder",
+      "children": [
+        {
+          "name": "75342134246245264362436",
+          "type": "test-case",
+          "data": {
+            "id": 102,
+            "name": "75342134246245264362436",
+            "stepItems": [],
+            "preConditionItems": [],
+            "postConditionItems": [],
+            "priority": null,
+            "executionTime": "",
+            "type": null,
+            "author": "Author",
+            "selected": false,
+            "loading": false,
+            "folder": "65462562",
+            "automationFlag": false
+          }
+        },
+        {
+          "name": "8588585855",
+          "type": "test-case",
+          "data": {
+            "id": 103,
+            "name": "8588585855",
+            "stepItems": [],
+            "preConditionItems": [],
+            "postConditionItems": [],
+            "priority": null,
+            "executionTime": "",
+            "type": null,
+            "author": "Author",
+            "selected": false,
+            "loading": false,
+            "folder": "65462562",
+            "automationFlag": true
+          }
+        },
+        {
+          "name": "345235234",
+          "type": "test-case",
+          "data": {
+            "id": 104,
+            "name": "345235234",
+            "stepItems": [],
+            "preConditionItems": [],
+            "postConditionItems": [],
+            "priority": null,
+            "executionTime": "",
+            "type": null,
+            "author": "Author",
+            "selected": false,
+            "loading": false,
+            "folder": "65462562",
+            "automationFlag": false
+          }
+        }
+      ]
+    }
+  ];
 
   displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   dataSource: MatTableDataSource<TestCase>;
   draggingRow: any = null;
   isModalOpen = false;
-  folderFilter: string = 'root'; // Значение фильтра по папке
+  folderFilter: string = 'root';
 
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private testCaseService: TestCaseService) {
-    this.dataSource = new MatTableDataSource(this.TEST_CASE_DATA);
+    this.dataSource = new MatTableDataSource<TestCase>([]);
   }
 
   ngOnInit(): void {
-    this.testCaseService.TEST_CASE_DATA$.subscribe(data => {
-      this.TEST_CASE_DATA = data;
-      this.updateFilteredData();
-    });
+    this.dataSource.data = this.extractTestCases(this.TREE_DATA);
     console.log('Data Source Initialized:', this.dataSource.data); // Отладочный вывод
-    console.log(this.TEST_CASE_DATA);
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
 
+  extractTestCases(treeNodes: TreeNode[]): TestCase[] {
+    let testCases: TestCase[] = [];
+    for (const node of treeNodes) {
+      if (node.type === 'test-case' && node.data) {
+        testCases.push(node.data as TestCase);
+      }
+      if (node.children) {
+        testCases = testCases.concat(this.extractTestCases(node.children));
+      }
+    }
+    return testCases;
+  }
+
   updateFilteredData(): void {
-    this.dataSource.data = this.TEST_CASE_DATA.filter(testCase => testCase.folder === this.folderFilter);
+    this.dataSource.data = this.extractTestCases(this.TREE_DATA).filter(testCase => testCase.folder === this.folderFilter);
   }
 
   setFolderFilter(folder: string): void {
@@ -166,20 +274,18 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
   }
 
   onCheckboxChange() {
-    // Чтобы триггерить обновление UI
     this.dataSource.data = [...this.dataSource.data];
   }
 
   runTest(testCase: TestCase) {
     console.log(`Running test: ${testCase.name}`);
-    testCase.loading = true; // Включаем лоадер
+    testCase.loading = true;
 
-    // Эмулируем выполнение автотеста с помощью таймера
     setTimeout(() => {
-      testCase.loading = false; // Выключаем лоадер
-      this.dataSource.data = [...this.dataSource.data]; // Обновляем таблицу для перерисовки
+      testCase.loading = false;
+      this.dataSource.data = [...this.dataSource.data];
       console.log(`Test completed: ${testCase.name}`);
-    }, 3000); // Таймер на 3 секунды
+    }, 3000);
   }
 
   runSelectedTests() {
@@ -189,7 +295,7 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
 
   openModal() {
     this.isModalOpen = true;
-    console.log(this.TEST_CASE_DATA);
+    console.log(this.dataSource.data);
   }
 
   handleModalClose() {
@@ -197,11 +303,11 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
   }
 
   showData() {
-    console.log(this.TEST_CASE_DATA);
+    console.log(this.dataSource.data);
   }
 
   showObjectFromRow(row: any) {
-    const foundObject = this.TEST_CASE_DATA.find(item => item.id === row.id);
+    const foundObject = this.dataSource.data.find(item => item.id === row.id);
     if (foundObject) {
       console.log(foundObject);
     } else {

@@ -73,7 +73,7 @@ export class TestCaseService {
   private testCasePostconditionItemsArray: PostConditionItem[] = [];
   private testCasePriority = 1;
   private testCaseTime = '';
-  private testCaseAutomationFlag = true;
+  private testCaseAutomationFlag = false;
   private testCaseType = 1;
   private testCaseAuthor = 'Some author';
   private testCaseSelected = false;
