@@ -284,15 +284,15 @@ export class TestCaseService {
     return this.TEST_CASE_DATA.length;
   }
 
-  setFolderName(folderName: string){
+  setFolderNameInTestCase(folderName: string){
     this.testCaseFolder = folderName;
+    console.log("setFolderName: ", this.testCaseFolder)
   }
   getFolderName() {
     return this.testCaseFolder;
   }
 
   getTestCaseName() {
-    console.log("from getTestCaseName: ",this.testCaseName)
     return this.testCase.name;
   }
 
