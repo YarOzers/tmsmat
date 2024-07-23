@@ -14,6 +14,7 @@ import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.com
 import {TestCaseService} from "../../services/test-case.service";
 import {Subscription} from "rxjs";
 import {CheckList, TestCase} from "../../interfaces/test-case.interfase";
+import {TreeNodeService} from "../../services/tree-node.service";
 
 export interface TreeNode {
   name: string;
@@ -30,7 +31,7 @@ export interface FlatNode {
   data?: TestCase | CheckList
 }
 
-const TREE_DATA: TreeNode[] = []
+let TREE_DATA: TreeNode[] = []
 
 @Component({
   selector: 'app-packages',
@@ -68,13 +69,16 @@ export class PackagesComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private testCaseService: TestCaseService
+    private testCaseService: TestCaseService,
+    private treeNodeService: TreeNodeService
   ) {
     this.dataSource.data = TREE_DATA;
   }
 
   ngOnInit(): void {
-
+    TREE_DATA = this.treeNodeService.TREE_DATA;
+    console.log("from onInit in package: ", TREE_DATA);
+    this.dataSource.data = TREE_DATA;
   }
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -216,22 +220,26 @@ export class PackagesComponent implements OnInit {
       const testCase = this.testCaseService.getTestCase();
       const testCaseName = testCase.name;
       if (testCaseName) {
-      const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
+        const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newTestCase: TreeNode = {name: testCaseName, type: 'test-case',data: testCase};
+          const newTestCase: TreeNode = {name: testCaseName, type: 'test-case', data: testCase};
           const parentTreeNode = this.getTreeNodeByFlatNode(node);
           if (parentTreeNode.children) {
             parentTreeNode.children.push(newTestCase);
           } else {
             parentTreeNode.children = [newTestCase];
           }
+          this.treeNodeService.TREE_DATA = TREE_DATA;
           this.updateTreeControl();
           this.treeControl.expand(node);
+
         }
       }
     });
-    console.log("tree_data: ",TREE_DATA);
+    console.log("tree_data: ", TREE_DATA);
+
   }
+
   openCreateTestCase(title: string): MatDialogRef<CreateTestCaseComponent> {
     return this.dialog.open(CreateTestCaseComponent, {
       // width: '100%',
@@ -351,7 +359,6 @@ export class PackagesComponent implements OnInit {
       }
     });
   }
-
 
 
   // Modal window

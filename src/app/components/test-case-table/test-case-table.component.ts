@@ -30,45 +30,14 @@ import {FormsModule} from "@angular/forms";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {FullscreenModalComponent} from "../fullscreen-modal/fullscreen-modal.component";
-import {
-  CheckList,
-  TestCasePostCondition,
-  TestCasePreCondition,
-  TestCaseStep
-} from "../../interfaces/test-case.interfase";
 import {TestCaseService} from "../../services/test-case.service";
 import {ExecutionModalComponent} from "../execution-modal/execution-modal.component";
 import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execution.component";
-
-export interface TestCase {
-  id: number;
-  name: string;
-  stepItems: TestCaseStep[] | null;
-  preConditionItems: TestCasePreCondition[] | null;
-  postConditionItems: TestCasePostCondition[] | null;
-  priority: number | null;
-  executionTime: string | null;
-  automationFlag: boolean | null;
-  type: number | null;
-  author: string | null;
-  selected: boolean | null;
-  loading: boolean | null;
-  folder: string | null;
-}
-export interface TreeNode {
-  name: string;
-  type: 'folder' | 'test-case' | 'check-list';
-  children?: TreeNode[];
-  data?: TestCase | CheckList
-}
-
-export interface FlatNode {
-  expandable: boolean;
-  name: string;
-  type: 'folder' | 'test-case' | 'check-list';
-  level: number;
-  data?: TestCase | CheckList
-}
+import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {TreeNode} from "../packages/packages.component";
+import {TestCase} from "../../interfaces/test-case.interfase";
+import {TreeNodeService} from "../../services/tree-node.service";
 
 
 @Component({
@@ -105,77 +74,17 @@ export interface FlatNode {
     CreateTestCaseComponent,
     FullscreenModalComponent,
     ExecutionModalComponent,
-    TestCaseExecutionComponent
+    TestCaseExecutionComponent,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatFormFieldModule
   ],
   templateUrl: './test-case-table.component.html',
   styleUrl: './test-case-table.component.css'
 })
 export class TestCaseTableComponent implements AfterViewInit, OnInit {
-  TREE_DATA: TreeNode[] = [
-    {
-      "name": "65462562",
-      "type": "folder",
-      "children": [
-        {
-          "name": "75342134246245264362436",
-          "type": "test-case",
-          "data": {
-            "id": 102,
-            "name": "75342134246245264362436",
-            "stepItems": [],
-            "preConditionItems": [],
-            "postConditionItems": [],
-            "priority": null,
-            "executionTime": "",
-            "type": null,
-            "author": "Author",
-            "selected": false,
-            "loading": false,
-            "folder": "65462562",
-            "automationFlag": false
-          }
-        },
-        {
-          "name": "8588585855",
-          "type": "test-case",
-          "data": {
-            "id": 103,
-            "name": "8588585855",
-            "stepItems": [],
-            "preConditionItems": [],
-            "postConditionItems": [],
-            "priority": null,
-            "executionTime": "",
-            "type": null,
-            "author": "Author",
-            "selected": false,
-            "loading": false,
-            "folder": "65462562",
-            "automationFlag": true
-          }
-        },
-        {
-          "name": "345235234",
-          "type": "test-case",
-          "data": {
-            "id": 104,
-            "name": "345235234",
-            "stepItems": [],
-            "preConditionItems": [],
-            "postConditionItems": [],
-            "priority": null,
-            "executionTime": "",
-            "type": null,
-            "author": "Author",
-            "selected": false,
-            "loading": false,
-            "folder": "65462562",
-            "automationFlag": false
-          }
-        }
-      ]
-    }
-  ];
+  TREE_DATA: TreeNode[] = [];
 
   displayedColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
   allColumns: string[] = ['id', 'name', 'priority', 'author', 'type', 'automationFlag'];
@@ -186,13 +95,17 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private testCaseService: TestCaseService) {
+  constructor(private testCaseService: TestCaseService,
+              private treeNodeService: TreeNodeService) {
     this.dataSource = new MatTableDataSource<TestCase>([]);
   }
 
   ngOnInit(): void {
-    this.dataSource.data = this.extractTestCases(this.TREE_DATA);
+    const extractedTestCases = this.extractTestCases(this.TREE_DATA);
+    this.dataSource.data = extractedTestCases;
     console.log('Data Source Initialized:', this.dataSource.data); // Отладочный вывод
+    this.TREE_DATA = this.treeNodeService.TREE_DATA;
+    console.log("From testCaseComponent: ", this.TREE_DATA);
   }
 
   ngAfterViewInit() {
@@ -212,13 +125,18 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
     return testCases;
   }
 
-  updateFilteredData(): void {
-    this.dataSource.data = this.extractTestCases(this.TREE_DATA).filter(testCase => testCase.folder === this.folderFilter);
+  filterDataByFolder(folderName: string): void {
+    const extractedTestCases = this.extractTestCases(this.TREE_DATA);
+    if (folderName === 'root') {
+      this.dataSource.data = extractedTestCases;
+    } else {
+      this.dataSource.data = extractedTestCases.filter(testCase => testCase.folder === folderName);
+    }
   }
 
   setFolderFilter(folder: string): void {
     this.folderFilter = folder;
-    this.updateFilteredData();
+    this.filterDataByFolder(folder);
   }
 
   get displayedColumnsWithSelectAndRun(): string[] {
@@ -313,5 +231,18 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
     } else {
       console.log('Object not found');
     }
+  }
+
+  getFolders(treeNodes: TreeNode[]): string[] {
+    let folders: string[] = [];
+    for (const node of treeNodes) {
+      if (node.type === 'folder') {
+        folders.push(node.name);
+        if (node.children) {
+          folders = folders.concat(this.getFolders(node.children));
+        }
+      }
+    }
+    return folders;
   }
 }
