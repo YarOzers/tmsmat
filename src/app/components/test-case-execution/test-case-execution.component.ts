@@ -82,7 +82,7 @@ import {
   TextPartLanguage,
   TextTransformation, TodoList, Underline, Undo
 } from "ckeditor5";
-import {PostConditionItem, PreConditionItem, StepItem, TestCase} from "../../interfaces/test-case.interfase";
+import {TestCasePostCondition, TestCasePreCondition, TestCaseStep, TestCase} from "../../interfaces/test-case.interfase";
 import {TestCaseService} from "../../services/test-case.service";
 
 @Component({
@@ -131,9 +131,9 @@ export class TestCaseExecutionComponent {
   readonly Editor = BalloonEditor;
   isLayoutReady = false;
 
-  stepItems: StepItem[] = [];
-  preConditionItems: PreConditionItem[] = [];
-  postConditionItems: PostConditionItem[] = [];
+  stepItems: TestCaseStep[] = [];
+  preConditionItems: TestCasePreCondition[] = [];
+  postConditionItems: TestCasePostCondition[] = [];
 
   testCase: TestCase = {
     id: this.testCaseId,

@@ -3,14 +3,14 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding class="tree-node" cdkDrag>
     <button mat-icon-button disabled></button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
-      {{ node.type === 'file' ? 'description' : 'folder' }}
+      {{ node.type === 'test-case' ? 'description' : 'folder' }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
     <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <ng-container *ngIf="node.type === 'file'; else folderMenu">
+      <ng-container *ngIf="node.type === 'test-case'; else folderMenu">
         <button mat-menu-item (click)="editFile(node)">
           <mat-icon>edit</mat-icon>
           <span>Редактировать</span>
@@ -61,14 +61,14 @@
       </mat-icon>
     </button>
     <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'">
-      {{ node.type === 'file' ? 'description' : 'folder' }}
+      {{ node.type === 'test-case' ? 'description' : 'folder' }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
     <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <ng-container *ngIf="node.type === 'file'; else folderMenu">
+      <ng-container *ngIf="node.type === 'test-case'; else folderMenu">
         <button mat-menu-item (click)="editFile(node)">
           <mat-icon>edit</mat-icon>
           <span>Редактировать</span>

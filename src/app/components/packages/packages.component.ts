@@ -46,8 +46,8 @@ const TREE_DATA: TreeNode[] = [
             name: 'cdk',
             type: 'folder',
             children: [
-              {name: 'package.json', type: 'file'},
-              {name: 'BUILD.bazel', type: 'file'},
+              {name: 'package.json', type: 'test-case'},
+              {name: 'BUILD.bazel', type: 'test-case'},
             ]
           },
           {name: 'material', type: 'folder'}
@@ -63,19 +63,19 @@ const TREE_DATA: TreeNode[] = [
         name: 'packages',
         type: 'folder',
         children: [
-          {name: '.travis.yml', type: 'file'},
-          {name: 'firebase.json', type: 'file'}
+          {name: '.travis.yml', type: 'test-case'},
+          {name: 'firebase.json', type: 'test-case'}
         ]
       },
-      {name: 'package.json', type: 'file'}
+      {name: 'package.json', type: 'test-case'}
     ]
   },
   {
     name: 'angularjs',
     type: 'folder',
     children: [
-      {name: 'gulpfile.js', type: 'file'},
-      {name: 'README.md', type: 'file'}
+      {name: 'gulpfile.js', type: 'test-case'},
+      {name: 'README.md', type: 'test-case'}
     ]
   }
 ];
@@ -85,7 +85,7 @@ const TREE_DATA: TreeNode[] = [
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css'],
   standalone: true,
-  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem, CdkDropList, CreateTestCaseComponent, FullscreenModalComponent]
+  imports: [MatTreeModule, MatButtonModule, MatIconModule, MatMenuTrigger, MatMenu, NgIf, MatMenuItem, CdkDropList, FullscreenModalComponent, CreateTestCaseComponent]
 })
 export class PackagesComponent implements OnInit {
 
@@ -265,7 +265,7 @@ export class PackagesComponent implements OnInit {
       if (testCaseName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newTestCase: TreeNode = {name: testCaseName, type: 'file'};
+          const newTestCase: TreeNode = {name: testCaseName, type: 'test-case'};
           const newTestCaseFlatNode: FlatNode = {
             name: testCaseName,
             type: 'file',
@@ -299,10 +299,10 @@ export class PackagesComponent implements OnInit {
       if (checklistName) {
         const parentNodeIndex = this.treeControl.dataNodes.indexOf(node);
         if (parentNodeIndex !== -1) {
-          const newChecklist: TreeNode = {name: checklistName, type: 'file'};
+          const newChecklist: TreeNode = {name: checklistName, type: 'test-case'};
           const newChecklistFlatNode: FlatNode = {
             name: checklistName,
-            type: 'file',
+            type: 'test-case',
             level: node.level + 1,
             expandable: false
           };
