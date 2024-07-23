@@ -1,4 +1,4 @@
-import {PostConditionItem, PreConditionItem, StepItem} from "../components/test-case/test-case.component";
+import {BalloonEditor} from "ckeditor5";
 
 export interface TestCaseTablePresentation {
   id: number;
@@ -14,11 +14,82 @@ export interface TestCaseTablePresentation {
 export interface TestCase {
   id: number;
   name: string;
-  stepItems: StepItem[] | null;
-  preConditionItems: PreConditionItem[] | null;
-  postConditionItems: PostConditionItem[] | null;
-  priority: string | null;
-  time: string | null;
-  attribute: string | null;
+  stepItems: TestCaseStep[] | null;
+  preConditionItems: TestCasePreCondition[] | null;
+  postConditionItems: TestCasePostCondition[] | null;
+  priority: number | null;
+  executionTime: string | null;
+  automationFlag: boolean | undefined;
+  type: number | null;
+  author: string | null;
+  selected: boolean | null;
+  loading: boolean | null;
   folder: string | null;
+}
+
+
+export interface TestCaseStep {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface TestCasePreCondition {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface TestCasePostCondition {
+  selected: boolean;
+  id: number;
+  action: string;
+  expectedResult: string
+  actionEditor?: BalloonEditor;
+  expectedResultEditor?: BalloonEditor;
+}
+
+export interface CheckList {
+  id: number;
+  name: string;
+  stepItems: CheckListStep[] | null;
+  preConditionItems: CheckListPreCondition[] | null;
+  postConditionItems: CheckListPostCondition[] | null;
+  priority: number | null;
+  executionTime: string | null;
+  automationFlag: boolean | undefined;
+  type: number | null;
+  author: string | null;
+  selected: boolean | null;
+  loading: boolean | null;
+  folder: string | null;
+}
+
+export interface CheckListStep {
+  selected: boolean;
+  id: number;
+  row: string;
+  rowEditor?: BalloonEditor;
+
+}
+
+export interface CheckListPreCondition {
+  selected: boolean;
+  id: number;
+  row: string;
+  rowEditor?: BalloonEditor;
+
+}
+
+export interface CheckListPostCondition {
+  selected: boolean;
+  id: number;
+  row: string;
+  rowEditor?: BalloonEditor;
 }

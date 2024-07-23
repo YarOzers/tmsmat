@@ -1,24 +1,16 @@
-import {
-  AfterContentInit, AfterViewChecked,
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  QueryList,
-  Renderer2,
-  ViewChild,
-  ViewChildren
-} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, QueryList, Renderer2, ViewChild, ViewChildren} from '@angular/core';
+import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {FlexModule} from "@angular/flex-layout";
-import {PackagesComponent} from "../packages/packages.component";
-import {TestCaseListComponent} from "../test-case-list/test-case-list.component";
-import {QuillEditorComponent, QuillModule} from "ngx-quill";
 import {FormsModule} from "@angular/forms";
-import {CustomToolbarComponent} from "../custom-toolbar/custom-toolbar.component";
+import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatIcon} from "@angular/material/icon";
+import {MatIconButton} from "@angular/material/button";
+import {MatOption} from "@angular/material/core";
+import {MatSelect} from "@angular/material/select";
+import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
+import {NgForOf} from "@angular/common";
 import {TestCaseComponent} from "../test-case/test-case.component";
-import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
-import {MatOption, MatSelect, MatSelectModule} from "@angular/material/select";
 import {
   AccessibilityHelp,
   Alignment,
@@ -88,56 +80,36 @@ import {
   TableProperties,
   TableToolbar,
   TextPartLanguage,
-  TextTransformation,
-  TodoList,
-  Underline,
-  Undo
+  TextTransformation, TodoList, Underline, Undo
 } from "ckeditor5";
-import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
-import {MatButton, MatIconButton} from "@angular/material/button";
-import {NgForOf} from "@angular/common";
-import {TestCaseService} from "../../services/test-case.service";
 import {TestCasePostCondition, TestCasePreCondition, TestCaseStep, TestCase} from "../../interfaces/test-case.interfase";
-import {MatIcon} from "@angular/material/icon";
-import {MatExpansionModule, MatExpansionPanel, MatExpansionPanelTitle} from "@angular/material/expansion";
-import {MatSidenav, MatSidenavContainer, MatSidenavModule} from "@angular/material/sidenav";
-import {timeout} from "rxjs";
-
+import {TestCaseService} from "../../services/test-case.service";
 
 @Component({
-  selector: 'app-create-test-case',
+  selector: 'app-test-case-execution',
   standalone: true,
-  imports: [
-    FlexModule,
-    PackagesComponent,
-    TestCaseListComponent,
-    QuillEditorComponent,
-    FormsModule,
-    QuillModule,
-    CustomToolbarComponent,
-    TestCaseComponent,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatFormFieldModule,
-    MatSelectModule,
-    CKEditorModule,
-    MatButton,
-    NgForOf,
-    FormsModule,
-    MatIconButton,
-    MatIcon,
-    MatExpansionPanel,
-    MatExpansionPanelTitle,
-    MatExpansionModule,
-    MatSidenavContainer,
-    MatSidenav,
-    MatSidenavModule
-  ],
-  templateUrl: './create-test-case.component.html',
-  styleUrl: './create-test-case.component.css'
+    imports: [
+        CKEditorModule,
+        FlexModule,
+        FormsModule,
+        MatExpansionPanel,
+        MatExpansionPanelHeader,
+        MatExpansionPanelTitle,
+        MatFormField,
+        MatIcon,
+        MatIconButton,
+        MatLabel,
+        MatOption,
+        MatSelect,
+        MatSidenav,
+        MatSidenavContainer,
+        MatSidenavContent,
+        NgForOf
+    ],
+  templateUrl: './test-case-execution.component.html',
+  styleUrl: './test-case-execution.component.css'
 })
-export class CreateTestCaseComponent implements AfterViewInit, OnInit {
+export class TestCaseExecutionComponent {
   @ViewChild(TestCaseComponent) testCaseComponent!: TestCaseComponent;
   @ViewChildren('editorElement') editorElements!: QueryList<ElementRef>;
   @ViewChild('sidenav') sidenav: MatSidenav | undefined;
@@ -154,7 +126,6 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
   selectedAllSteps = false;
   selectedAllPreConditions = false;
   selectedAllPostConditions = false;
-  testCaseFolder = '6666666666';
 
   config: any = {};
   readonly Editor = BalloonEditor;
@@ -179,7 +150,6 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
     loading: false,
     folder: null
   }
-
 
 
   getTestCaseData() {
@@ -587,8 +557,6 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
 
   saveTestCase(): void {
     this.testCaseId = this.testCaseService.getTestCaseId();
-    this.testCaseFolder = this.testCaseService.getFolderName();
-    console.log("in saveTestCase() :" , this.testCaseFolder as string)
     this.testCase = {
       id: this.testCaseId = this.testCaseId + 1, // Автоматически увеличиваем ID
       name: this.testCaseName,
@@ -602,7 +570,7 @@ export class CreateTestCaseComponent implements AfterViewInit, OnInit {
       author: 'Author',
       selected: false,
       loading: false,
-      folder: this.testCaseFolder
+      folder: null
 
     };
     console.log(this.testCase);

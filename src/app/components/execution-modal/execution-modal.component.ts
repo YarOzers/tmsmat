@@ -1,33 +1,33 @@
-import {AfterViewInit, Component, ContentChild, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ContentChild, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {CreateTestCaseComponent} from "../create-test-case/create-test-case.component";
 import {TestCaseService} from "../../services/test-case.service";
-import {TestCaseComponent} from "../test-case/test-case.component";
+import {TestCaseExecutionComponent} from "../test-case-execution/test-case-execution.component";
 
 @Component({
-  selector: 'app-fullscreen-modal',
+  selector: 'app-execution-modal',
   standalone: true,
-  imports: [
-    NgIf
-  ],
-  templateUrl: './fullscreen-modal.component.html',
-  styleUrl: './fullscreen-modal.component.css'
+    imports: [
+        NgIf
+    ],
+  templateUrl: './execution-modal.component.html',
+  styleUrl: './execution-modal.component.css'
 })
-export class FullscreenModalComponent implements AfterViewInit{
+export class ExecutionModalComponent implements AfterViewInit{
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
-  @ContentChild(CreateTestCaseComponent) createTestCaseComponent!: CreateTestCaseComponent;
+  @ContentChild(TestCaseExecutionComponent) testCaseExecutionComponent!: TestCaseExecutionComponent;
   constructor(private testCaseService: TestCaseService) {}
 
   ngAfterViewInit(): void {
 
-    }
+  }
 
   testCase: any;
 
   ngAfterContentInit() {
     // Проверка, что ContentChild корректно инициализирован
-    if (!this.createTestCaseComponent) {
+    if (!this.testCaseExecutionComponent) {
       console.error('CreateTestCaseComponent not found');
     }
   }
@@ -38,12 +38,11 @@ export class FullscreenModalComponent implements AfterViewInit{
   }
 
   saveTestCase() {
-    if (this.createTestCaseComponent) {
-      const data = this.createTestCaseComponent.getTestCaseData();
+    if (this.testCaseExecutionComponent) {
+      const data = this.testCaseExecutionComponent.getTestCaseData();
       this.testCase = {
         ...data
       };
-      this.testCaseService.saveTestCase(data);
       this.closeModal();
     } else {
       console.error('CreateTestCaseComponent not found');

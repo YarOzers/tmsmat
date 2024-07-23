@@ -3,12 +3,12 @@
     <app-top-menu></app-top-menu>
   </div>
   <as-split [direction]="'horizontal'">
-    <as-split-area [size]="20">
-      <div class="left-column">
+    <as-split-area [size]="leftColumnSize">
+      <div class="left-column" (pointerdown)="onPointerDown($event)">
         <app-packages></app-packages>
       </div>
     </as-split-area>
-    <as-split-area [size]="80">
+    <as-split-area [size]="rightColumnSize">
       <div class="right-column">
         <app-test-case-table></app-test-case-table>
       </div>

@@ -131,7 +131,6 @@ export interface PostConditionItem {
 export class TestCaseComponent implements OnInit, AfterViewInit {
   @ViewChildren('editorElement') editorElements!: QueryList<ElementRef>;
 
-
   stepItemId: number = 1;
   preConditionItemId: number = 1;
   postConditionItemId: number = 1;

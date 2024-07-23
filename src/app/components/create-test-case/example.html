@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="header" fxLayout="row" fxLayoutAlign="start start">
+    <div class="input-container" fxLayout="row" fxFlex="100">
+      <input type="text" [(ngModel)]="testCaseName" placeholder="введите название тест-кейса" class="styled-input">
+    </div>
+  </div>
+  <div class="content" fxLayout="row" fxFlexFill>
+    <mat-sidenav-container class="example-container" fxFlexFill>
+      <mat-sidenav #sidenav mode="side" opened>
+        <!--    Левая колонка-->
+        <div class="left-column">
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <!--      Правая колонка-->
+        <div fxFlex="100" class="right-column">
+          <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</div>

@@ -1,40 +1,83 @@
 import {Injectable} from '@angular/core';
 import {PostConditionItem, PreConditionItem, StepItem} from '../components/test-case/test-case.component';
+import {BehaviorSubject, Subject} from "rxjs";
+import {TestCase} from "../interfaces/test-case.interfase";
 
-const TEST_CASE_DATA: TestCase[] = [];
-
-interface TestCase {
-  id: number;
-  name: string;
-  stepItems: StepItem[] | null;
-  preConditionItems: PreConditionItem[] | null;
-  postConditionItems: PostConditionItem[] | null;
-  priority: string | null;
-  time: string | null;
-  attribute: string | null;
-  folder: string | null;
-}
-
-interface TestCaseTablePresentation{
-  id: number;
-  name: string;
-  priority: string;
-  author: string;
-  type: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TestCaseService {
-  private testCaseId = 0;
+
+  private eventSource = new Subject<void>();
+  event$ = this.eventSource.asObservable();
+
+  private TEST_CASE_DATA: TestCase[] = [
+    {
+      id: 101,
+      name: "Login Test",
+      stepItems: [
+        {
+          selected: false,
+          id: 101,
+          action: "Open the login page",
+          expectedResult: "Login page is displayed"
+        },
+        {
+          selected: false,
+          id: 102,
+          action: "Enter username and password",
+          expectedResult: "User is able to enter credentials"
+        },
+        {
+          selected: false,
+          id: 103,
+          action: "Click login button",
+          expectedResult: "User is logged in and redirected to the dashboard"
+        }
+      ],
+      preConditionItems: [
+        {
+          selected: false,
+          id: 201,
+          action: "User is registered",
+          expectedResult: "User account exists"
+        }
+      ],
+      postConditionItems: [
+        {
+          selected: false,
+          id: 301,
+          action: "Log out",
+          expectedResult: "User is logged out and redirected to the login page"
+        }
+      ],
+      priority: 1,
+      executionTime: "11:22",
+      automationFlag: true,
+      type: 1,
+      author: "test_author_1",
+      selected: false,
+      loading: false,
+      folder: "root"
+    }
+  ];
+  private dataSubject = new BehaviorSubject(this.TEST_CASE_DATA);
+
+  TEST_CASE_DATA$ = this.dataSubject.asObservable();
+
+  private testCaseId = 100;
   private testCaseName = '';
   private testCaseStepItemsArray: StepItem[] = [];
   private testCasePreconditionItemsArray: PreConditionItem[] = [];
   private testCasePostconditionItemsArray: PostConditionItem[] = [];
-  private testCasePriority = '';
+  private testCasePriority = 1;
   private testCaseTime = '';
-  private testCaseAttribute = '';
+  private testCaseAutomationFlag = true;
+  private testCaseType = 1;
+  private testCaseAuthor = 'Some author';
+  private testCaseSelected = false;
+  private testCaseLoading = false;
   private testCaseFolder = '';
 
   private testCase: TestCase = {
@@ -44,8 +87,12 @@ export class TestCaseService {
     preConditionItems: this.testCasePreconditionItemsArray,
     postConditionItems: this.testCasePostconditionItemsArray,
     priority: this.testCasePriority,
-    time: this.testCaseTime,
-    attribute: this.testCaseAttribute,
+    executionTime: this.testCaseTime,
+    automationFlag: this.testCaseAutomationFlag,
+    type: this.testCaseType,
+    author: this.testCaseAuthor,
+    selected: this.testCaseSelected,
+    loading: this.testCaseLoading,
     folder: this.testCaseFolder
   }
 
@@ -60,9 +107,6 @@ export class TestCaseService {
     this.testCaseStepItemsArray = testCases;
   }
 
-  addToTestCaseStepItemsArray(item: any): void {
-    this.testCaseStepItemsArray.push(item);
-  }
 
   clearTestCaseStepItemsArray(): void {
     this.testCaseStepItemsArray = [];
@@ -76,9 +120,6 @@ export class TestCaseService {
     this.testCasePreconditionItemsArray = testCases;
   }
 
-  addToTestCasePreconditionItemsArray(item: any): void {
-    this.testCasePreconditionItemsArray.push(item);
-  }
 
   clearTestCasePreconditionItemsArray(): void {
     this.testCasePreconditionItemsArray = [];
@@ -92,9 +133,6 @@ export class TestCaseService {
     this.testCasePostconditionItemsArray = testCases;
   }
 
-  addToTestCasePostConditionArray(item: any): void {
-    this.testCasePostconditionItemsArray.push(item);
-  }
 
   clearTestCasePostConditionItemsArray(): void {
     this.testCasePostconditionItemsArray = [];
@@ -145,30 +183,46 @@ export class TestCaseService {
     // this.http.post('/api/saveTestCase', this.items).subscribe();
   }
 
-  saveTestCase(){
-    TEST_CASE_DATA.push(this.testCase);
-  }
-  setTestCaseId(id: number){
-    this.testCaseId = id;
+
+  addTestCaseInData(testCase: TestCase) {
+    this.TEST_CASE_DATA.push(testCase);
+    this.dataSubject.next(this.TEST_CASE_DATA)
+    console.log(testCase);
+    console.log("TestCase was added into array TEST_CASE_DATA :" + this.TEST_CASE_DATA)
   }
 
-  setTestCaseName(name: string){
-    this.testCaseName = name;
+  getTestCaseId() {
+    return this.TEST_CASE_DATA.length + 100;
   }
 
-  setTestCasePriority(priority: string){
-    this.testCasePriority = priority;
+  setFolderNameInTestCase(folderName: string){
+    this.testCaseFolder = folderName;
+    console.log("setFolderName: ", this.testCaseFolder)
+  }
+  getFolderName() {
+    return this.testCaseFolder;
   }
 
-  setTestCaseTime(time: string){
-    this.testCaseTime = time;
+  getTestCaseName() {
+    return this.testCase.name;
   }
 
-  setTestCaseAttribute(attribute: string){
-    this.testCaseAttribute = attribute;
+  saveTestCase(data: TestCase) {
+    this.testCase = data;
+    console.log("testCase in Service: ", this.testCase);
+    this.eventSource.next();
   }
 
-  getTestCaseData(){
-    return TEST_CASE_DATA;
+  changeTestCaseFolder(folderName: string, testCaseId: number){
+    const testCase = this.TEST_CASE_DATA.find(tc => tc.id === testCaseId);
+    if (testCase) {
+      testCase.folder = folderName;
+      this.dataSubject.next(this.TEST_CASE_DATA);
+      console.log(`Folder of test case with id ${testCaseId} changed to ${folderName}`);
+    } else {
+      console.log(`Test case with id ${testCaseId} not found`);
+    }
   }
+
+
 }

@@ -6,7 +6,7 @@
       {{ node.type === 'test-case' ? 'description' : (node.type === 'check-list' ? 'check_box' : 'folder') }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
-    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"  (click)="$event.stopPropagation()">
+    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
@@ -64,7 +64,7 @@
       {{ node.type === 'test-case' ? 'description' : (node.type === 'check-list' ? 'check_box' : 'folder') }}
     </mat-icon>
     <span class="node-name">{{ node.name }}</span>
-    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu"  (click)="$event.stopPropagation()">
+    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" (click)="$event.stopPropagation()">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
