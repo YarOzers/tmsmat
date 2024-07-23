@@ -14,7 +14,7 @@ export class TestCaseService {
 
   private TEST_CASE_DATA: TestCase[] = [
     {
-      id: 1,
+      id: 101,
       name: "Login Test",
       stepItems: [
         {
@@ -59,10 +59,10 @@ export class TestCaseService {
       author: "test_author_1",
       selected: false,
       loading: false,
-      folder: null
+      folder: "root"
     },
     {
-      id: 2,
+      id:102,
       name: "Registration Test",
       stepItems: [
         {
@@ -100,10 +100,10 @@ export class TestCaseService {
       author: "test_author_2",
       selected: false,
       loading: false,
-      folder: null
+      folder: "root"
     },
     {
-      id: 3,
+      id: 103,
       name: "Password Reset Test",
       stepItems: [
         {
@@ -148,14 +148,14 @@ export class TestCaseService {
       author: "test_author_3",
       selected: false,
       loading: false,
-      folder: null
+      folder: "root"
     }
   ];
   private dataSubject = new BehaviorSubject(this.TEST_CASE_DATA);
 
   TEST_CASE_DATA$ = this.dataSubject.asObservable();
 
-  private testCaseId = 0;
+  private testCaseId = 100;
   private testCaseName = '';
   private testCaseStepItemsArray: StepItem[] = [];
   private testCasePreconditionItemsArray: PreConditionItem[] = [];
@@ -281,7 +281,7 @@ export class TestCaseService {
   }
 
   getTestCaseId() {
-    return this.TEST_CASE_DATA.length;
+    return this.TEST_CASE_DATA.length + 100;
   }
 
   setFolderNameInTestCase(folderName: string){

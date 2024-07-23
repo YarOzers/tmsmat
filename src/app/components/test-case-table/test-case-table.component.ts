@@ -83,6 +83,7 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<TestCase>;
   draggingRow: any = null;
   isModalOpen = false;
+  folderFilter: string = 'root'; // Значение фильтра по папке
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -93,7 +94,7 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.testCaseService.TEST_CASE_DATA$.subscribe(data => {
       this.TEST_CASE_DATA = data;
-      this.dataSource.data = this.TEST_CASE_DATA;
+      this.updateFilteredData();
     });
     console.log('Data Source Initialized:', this.dataSource.data); // Отладочный вывод
     console.log(this.TEST_CASE_DATA);
@@ -101,6 +102,15 @@ export class TestCaseTableComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+  }
+
+  updateFilteredData(): void {
+    this.dataSource.data = this.TEST_CASE_DATA.filter(testCase => testCase.folder === this.folderFilter);
+  }
+
+  setFolderFilter(folder: string): void {
+    this.folderFilter = folder;
+    this.updateFilteredData();
   }
 
   get displayedColumnsWithSelectAndRun(): string[] {
